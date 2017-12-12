@@ -1,6 +1,6 @@
 package bgu.spl.a2;
-
-import java.util.Map;
+import java.util.*;
+import java.util.Dictionary;
 
 /**
  * represents an actor thread pool - to understand what this class does please
@@ -14,6 +14,9 @@ import java.util.Map;
  */
 public class ActorThreadPool {
 
+
+	private Map<PrivateState,Queue> actors;
+	private Thread[] threads;
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
 	 * should not get started until calling to the {@link #start()} method.
@@ -27,29 +30,13 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	public ActorThreadPool(int nthreads) {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		actors = new HashMap<PrivateState,Queue>();
+		threads = new Thread[nthreads];
+		for(int i=0; i<nthreads ; i++){
+		    Thread t = new Thread();
+		    threads[i] = t;
+        }
 	}
-
-	/**
-	 * getter for actors
-	 * @return actors
-	 */
-	public Map<String, PrivateState> getActors(){
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
-	}
-	
-	/**
-	 * getter for actor's private state
-	 * @param actorId actor's id
-	 * @return actor's private state
-	 */
-	public PrivateState getPrivateState(String actorId){
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
-	}
-
 
 	/**
 	 * submits an action into an actor to be executed by a thread belongs to
@@ -63,8 +50,10 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+        for(int i =0; i < actors.size(); i++){
+            
+        }
+
 	}
 
 	/**
