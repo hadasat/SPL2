@@ -35,6 +35,8 @@ public class VersionMonitor {
     }
 
     public void await(int version) throws InterruptedException {
-
+        while(this.version.equals(version)) {
+            Thread.sleep(300);
+        }
     }
 }
