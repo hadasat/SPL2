@@ -8,19 +8,14 @@ import java.util.List;
  * IMPORTANT: You can not add any field to this class.
  */
 public abstract class PrivateState {
-	protected String name;
-
+	
 	// holds the actions' name what were executed
 	private List<String> history;
 
 	public List<String> getLogger(){
 		return history;
 	}
-
-	public String getName(){
-		return name;
-	}
-
+	
 	/**
 	 * add an action to the records
 	 *  
