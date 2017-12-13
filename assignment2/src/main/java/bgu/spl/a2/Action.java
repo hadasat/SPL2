@@ -1,6 +1,9 @@
 package bgu.spl.a2;
-
+import sun.plugin2.jvm.RemoteJVMLauncher;
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * an abstract class that represents an action that may be executed using the
@@ -15,7 +18,16 @@ import java.util.Collection;
  */
 public abstract class Action<R> {
 
-	/**
+    protected callback finalCallBack;
+    protected Promise promise;
+    protected ConcurrentLinkedQueue <Action> subActions;
+    protected int numSubAction;
+    protected String AcrtorID;
+    protected PrivateState ActorPS;
+    protected AtomicBoolean hasStarted;
+    protected ActorThreadPool pool;
+    protected String actionName;
+	/**.
      * start handling the action - note that this method is protected, a thread
      * cannot call it directly.
      */
@@ -35,7 +47,16 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
-   }
+        if(hasStarted.compareAndSet(false,true)){
+            this.AcrtorID = AcrtorID;
+            this.ActorPS = actorState;
+            this.pool = pool;
+            this.start();
+        }
+        else{
+            finalCallBack.call();
+        }
+    }
     
     
     /**
@@ -49,11 +70,19 @@ public abstract class Action<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
-   
+       	finalCallBack = callback;
+       	for (Action ac: actions) {
+            ac.promise.subscribe(this::down);
+        }
     }
 
+    public synchronized void down(){
+            numSubAction--;
+            if(numSubAction == 0){
+                pool.submit(this, AcrtorID, ActorPS);
+            }
+
+    }
     /**
      * resolve the internal result - should be called by the action derivative
      * once it is done.
@@ -61,17 +90,14 @@ public abstract class Action<R> {
      * @param result - the action calculated result
      */
     protected final void complete(R result) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
-   
+       	promise.resolve(result);
     }
     
     /**
      * @return action's promise (result)
      */
     public final Promise<R> getResult() {
-    	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    	return promise;
     }
     
     /**
@@ -87,8 +113,8 @@ public abstract class Action<R> {
      * @return promise that will hold the result of the sent action
      */
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        pool.submit(action,actorId,actorState);
+        return action.promise;
 	}
 	
 	/**
@@ -96,15 +122,13 @@ public abstract class Action<R> {
 	 * @param actionName
 	 */
 	public void setActionName(String actionName){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        this.actionName = actionName;
 	}
 	
 	/**
 	 * @return action's name
 	 */
 	public String getActionName(){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return actionName;
 	}
 }

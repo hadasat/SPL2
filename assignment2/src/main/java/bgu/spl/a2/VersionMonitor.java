@@ -1,5 +1,7 @@
 package bgu.spl.a2;
 
+import com.sun.org.apache.xerces.internal.parsers.CachingParserPool;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -32,11 +34,12 @@ public class VersionMonitor {
 
     public void inc() {
         version.incrementAndGet();
+        notifyAll();
     }
 
-    public void await(int version) throws InterruptedException {
+    public synchronized void await(int version) throws InterruptedException {
         while(this.version.equals(version)) {
-            Thread.sleep(300);
+            this.wait();
         }
     }
 }
