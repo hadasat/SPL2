@@ -1,8 +1,8 @@
 package bgu.spl.a2.sim.privateStates;
 
-import java.util.HashMap;
-
 import bgu.spl.a2.PrivateState;
+
+import java.util.HashMap;
 
 /**
  * this class describe student private state
@@ -18,8 +18,8 @@ public class StudentPrivateState extends PrivateState{
 	 * this may cause automatic tests to fail..
 	 */
 	public StudentPrivateState() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		grades = new HashMap<>();
+		signature = 0;
 	}
 
 	public HashMap<String, Integer> getGrades() {
