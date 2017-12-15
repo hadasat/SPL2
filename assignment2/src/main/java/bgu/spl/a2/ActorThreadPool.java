@@ -1,6 +1,8 @@
 package bgu.spl.a2;
 import java.util.*;
-import java.util.Dictionary;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * represents an actor thread pool - to understand what this class does please
@@ -13,10 +15,20 @@ import java.util.Dictionary;
  * methods
  */
 public class ActorThreadPool {
-
-
-	private Map<PrivateState,Queue> actors;
+	private  VersionMonitor version;
+	private Runnable runnable;
+	private int size;
+	private ConcurrentHashMap<String,ConcurrentLinkedQueue<Action>> actors;
+	private ConcurrentHashMap<String,PrivateState> data;
+	private ConcurrentHashMap<String,AtomicBoolean> avilableActor;
 	private Thread[] threads;
+	private AtomicBoolean entity;
+
+	public Map<String,ConcurrentLinkedQueue<bgu.spl.a2.Action>> getActor(){return actors;}
+	public Map<String,PrivateState> getData(){return data;}
+	public Thread[] getThreads(){return threads;}
+
+
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
 	 * should not get started until calling to the {@link #start()} method.
@@ -30,13 +42,20 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	public ActorThreadPool(int nthreads) {
-		actors = new HashMap<PrivateState,Queue>();
+		version = new VersionMonitor();
+		size = nthreads;
+		actors = new ConcurrentHashMap();
+		data = new ConcurrentHashMap();
+		avilableActor = new ConcurrentHashMap<>();
 		threads = new Thread[nthreads];
+		runnable = new LikeAThread(this);
+		entity = new AtomicBoolean(false);
 		for(int i=0; i<nthreads ; i++){
-		    Thread t = new Thread();
-		    threads[i] = t;
-        }
+			Thread t = new Thread(runnable);
+			threads[i] = t;
+		}
 	}
+
 
 	/**
 	 * submits an action into an actor to be executed by a thread belongs to
@@ -50,10 +69,19 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-        for(int i =0; i < actors.size(); i++){
-            
-        }
-
+		version.inc();
+		for (Map.Entry<String, ConcurrentLinkedQueue<Action>> entry : actors.entrySet())
+		{
+			if(entry.getKey().equals(actorId)){
+				entry.getValue().add(action);
+				return;
+			}
+		}
+		ConcurrentLinkedQueue q = new ConcurrentLinkedQueue();
+		q.add(action);
+		actors.put(actorId, q);
+		data.put(actorId, actorState);
+		avilableActor.put(actorId, new AtomicBoolean(true));
 	}
 
 	/**
@@ -75,8 +103,31 @@ public class ActorThreadPool {
 	 * start the threads belongs to this thread pool
 	 */
 	public void start() {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (entity.compareAndSet(false, true)) {
+			for (int i = 0; i < threads.length; i++) {
+				threads[i].start();
+			}
+		}
 	}
 
+	public void execute() {
+		boolean wait = false;
+		for (Map.Entry<String, AtomicBoolean> entry : avilableActor.entrySet()) {
+			if (entry.getValue().compareAndSet(true, false)) {
+				ConcurrentLinkedQueue q = actors.get(entry.getKey());
+				PrivateState p = data.get(entry.getKey());
+				Action a = (Action) q.poll();
+				a.handle(this, entry.getKey(), p);
+				entity.compareAndSet(false, true);
+				version.inc();
+				wait = true;
+			}
+		}
+		if (!wait) {
+			try {
+				version.await(version.getVersion());
+			} catch (InterruptedException e) {}
+		}
+	}
 }
+
