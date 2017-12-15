@@ -1,7 +1,5 @@
 package bgu.spl.a2;
-import sun.plugin2.jvm.RemoteJVMLauncher;
 import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,14 +17,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Action<R> {
 
     protected callback finalCallBack;
-    protected Promise promise;
+    protected Promise<R> promise;
     protected ConcurrentLinkedQueue <Action> subActions;
     protected int numSubAction;
-    protected String AcrtorID;
+    protected String ActorID;
     protected PrivateState ActorPS;
     protected AtomicBoolean hasStarted;
     protected ActorThreadPool pool;
-    protected String actionName;
 	/**.
      * start handling the action - note that this method is protected, a thread
      * cannot call it directly.
@@ -48,7 +45,8 @@ public abstract class Action<R> {
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
         if(hasStarted.compareAndSet(false,true)){
-            this.AcrtorID = AcrtorID;
+            this.subActions = new ConcurrentLinkedQueue<>();
+            this.ActorID = actorId;
             this.ActorPS = actorState;
             this.pool = pool;
             this.start();
@@ -71,17 +69,18 @@ public abstract class Action<R> {
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
        	finalCallBack = callback;
-       	for (Action ac: actions) {
-            ac.promise.subscribe(this::down);
+       	if(actions != null) {
+            for (Action ac : actions) {
+                ac.promise.subscribe(this::down);
+            }
         }
     }
 
     public synchronized void down(){
             numSubAction--;
-            if(numSubAction == 0){
-                pool.submit(this, AcrtorID, ActorPS);
+            if(numSubAction <= 0){
+                pool.submit(this, ActorID, ActorPS);
             }
-
     }
     /**
      * resolve the internal result - should be called by the action derivative
@@ -117,18 +116,5 @@ public abstract class Action<R> {
         return action.promise;
 	}
 	
-	/**
-	 * set action's name
-	 * @param actionName
-	 */
-	public void setActionName(String actionName){
-        this.actionName = actionName;
-	}
-	
-	/**
-	 * @return action's name
-	 */
-	public String getActionName(){
-        return actionName;
-	}
+
 }

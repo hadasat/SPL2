@@ -1,8 +1,8 @@
 package bgu.spl.a2;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * represents an actor thread pool - to understand what this class does please
@@ -69,11 +69,12 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		version.inc();
+
 		for (Map.Entry<String, ConcurrentLinkedQueue<Action>> entry : actors.entrySet())
 		{
 			if(entry.getKey().equals(actorId)){
 				entry.getValue().add(action);
+				version.inc();
 				return;
 			}
 		}
@@ -82,6 +83,7 @@ public class ActorThreadPool {
 		actors.put(actorId, q);
 		data.put(actorId, actorState);
 		avilableActor.put(actorId, new AtomicBoolean(true));
+		version.inc();
 	}
 
 	/**

@@ -6,5 +6,5 @@ public class Unregister extends Action {
     @Override
     protected void start() {
 
-    } 
+    }
 }
