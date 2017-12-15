@@ -1,6 +1,4 @@
 package bgu.spl.a2;
-import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
