@@ -1,4 +1,6 @@
 package bgu.spl.a2;
+import javax.security.auth.callback.Callback;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * this class represents a deferred result i.e., an object that eventually will
@@ -17,6 +19,15 @@ package bgu.spl.a2;
  */
 public class Promise<T>{
 
+	private T resulte ;
+	private ConcurrentLinkedQueue<callback> callbacksList;
+
+	public Promise(){
+		resulte = null;
+		callbacksList = new ConcurrentLinkedQueue<>();
+	}
+
+
 	/**
 	 *
 	 * @return the resolved value if such exists (i.e., if this object has been
@@ -26,8 +37,10 @@ public class Promise<T>{
 	 *             not yet resolved
 	 */
 	public T get() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(isResolved())
+			return resulte;
+		else
+			throw new IllegalStateException("the promis is not yet result");
 	}
 
 	/**
@@ -37,8 +50,9 @@ public class Promise<T>{
 	 *         before.
 	 */
 	public boolean isResolved() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(resulte != null)
+			return true;
+		return false;
 	}
 
 
@@ -56,8 +70,13 @@ public class Promise<T>{
 	 *            - the value to resolve this promise object with
 	 */
 	public void resolve(T value){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (isResolved())
+			throw new IllegalStateException("the promise has been resolved");
+		resulte = value;
+		for(callback call: callbacksList){
+			call.call();
+		}
+		callbacksList.clear();
 	}
 
 	/**
@@ -74,7 +93,9 @@ public class Promise<T>{
 	 *            the callback to be called when the promise object is resolved
 	 */
 	public void subscribe(callback callback) {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(!isResolved())
+			callbacksList.add(callback);
+		else
+			callback.call();
 	}
 }
