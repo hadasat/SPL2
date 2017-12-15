@@ -6,11 +6,11 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class PartInCourse extends Action {
-    private int grade;
+    private Integer grade;
     private String course;
 
 
-    public  PartInCourse(int grade, String course){
+    public  PartInCourse(Integer grade, String course){
         this.grade = grade;
         this.course = course;
         promise = new Promise();
@@ -24,7 +24,7 @@ public class PartInCourse extends Action {
         then(subActions, ()-> {
             if((Boolean)prom.get()){
                 StudentPrivateState st = (StudentPrivateState)ActorPS;
-                st.addGrade(course, new Integer(grade));
+                st.addGrade(course, grade);
             }
             complete(prom.get());
         });

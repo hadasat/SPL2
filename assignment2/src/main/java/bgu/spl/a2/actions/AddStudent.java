@@ -17,7 +17,7 @@ public class AddStudent<Boolean> extends Action {
         SubStudToDep sub1 = new SubStudToDep(dep);
         subActions.add(sub1);
         numSubAction = subActions.size();
-
-        then(subActions, ()-> {complete(sendMessage(sub1,dep, new DepartmentPrivateState()).get());});
+        Promise prom = sendMessage(sub1,dep, new DepartmentPrivateState());
+        then(subActions, ()-> {complete(prom.get());});
     }
 }
