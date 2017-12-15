@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * this class describe department's private state
  */
-public class DepartmentPrivateState extends PrivateState{
+public class DepartmentPrivateState extends PrivateState {
 	private List<String> courseList;
 	private List<String> studentList;
-	
+
 	/**
- 	 * Implementors note: you may not add other constructors to this class nor
+	 * Implementors note: you may not add other constructors to this class nor
 	 * you allowed to add any other parameter to this constructor - changing
 	 * this may cause automatic tests to fail..
 	 */
@@ -38,13 +38,11 @@ public class DepartmentPrivateState extends PrivateState{
 		return false;
 	}
 
-	public boolean addCourse(String course){
-		if(!courseList.contains(course)) {
+	public boolean addCourse(String course) {
+		if (!courseList.contains(course)) {
 			courseList.add(course);
 			return true;
 		}
 		return false;
 	}
-
-
 }
