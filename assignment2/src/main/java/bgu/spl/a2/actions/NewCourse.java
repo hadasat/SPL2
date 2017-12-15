@@ -5,18 +5,19 @@ import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class NewCourse<Boolean> extends Action {
-    String dep;
+    String department;
 
-    public NewCourse(String dep){
-        this.dep = dep;
+    public NewCourse(String department){
+        this.department = department;
         promise = new Promise<Boolean>();
+
     }
 
     @Override
     protected void start() {
         Action<Boolean> sub1 = new SubCursToDep(ActorID);
         subActions.add(sub1);
-        numSubAction = subActions.size();
+        sendMessage(sub1,dep, new DepartmentPrivateState());
         then(subActions, ()-> {complete(sendMessage(sub1,dep, new DepartmentPrivateState()).get());});
     }
 }
