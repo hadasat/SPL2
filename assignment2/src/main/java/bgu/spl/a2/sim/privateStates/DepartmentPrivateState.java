@@ -30,12 +30,20 @@ public class DepartmentPrivateState extends PrivateState{
 		return studentList;
 	}
 
-	public void addStudent(String student){
-		studentList.add(student);
+	public boolean addStudent(String student) {
+		if (!studentList.contains(student)) {
+			studentList.add(student);
+			return true;
+		}
+		return false;
 	}
 
-	public void addCourse(String course){
-		courseList.add(course);
+	public boolean addCourse(String course){
+		if(!courseList.contains(course)) {
+			courseList.add(course);
+			return true;
+		}
+		return false;
 	}
 
 

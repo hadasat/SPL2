@@ -5,12 +5,12 @@ import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class NewCourse<Boolean> extends Action {
+
     String department;
 
     public NewCourse(String department){
         this.department = department;
         promise = new Promise<Boolean>();
-
     }
 
     @Override
