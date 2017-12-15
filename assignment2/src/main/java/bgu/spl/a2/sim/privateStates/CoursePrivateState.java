@@ -26,8 +26,8 @@ public class CoursePrivateState extends PrivateState{
 	public CoursePrivateState() {
 		availableSpots = new Integer(0);
 		registered = new Integer(0);
-		regStudents = new ArrayList<>();
-		prequisites = new ArrayList<>();
+		regStudents = new ArrayList<String>();
+		prequisites = new ArrayList<String>();
 	}
 
 	public Integer getAvailableSpots() {
@@ -48,7 +48,14 @@ public class CoursePrivateState extends PrivateState{
 
 	public void setAvailableSpots(Integer num){availableSpots = num;}
 
-	public void addRegister(){registered++;}
+	public boolean addRegister(String student){
+		if(regStudents.add(student)) {
+			availableSpots--;
+			registered++;
+			return true;
+		}
+		return false;
+	}
 
 	public void setRegistered(int num){registered = num;}
 

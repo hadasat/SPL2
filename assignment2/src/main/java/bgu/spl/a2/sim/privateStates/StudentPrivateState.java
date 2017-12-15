@@ -34,5 +34,5 @@ public class StudentPrivateState extends PrivateState {
 		grades.put(name, grade);
 	}
 
-	public boolean removeGradeFromSheet()
+	public boolean removeGradeFromSheet(){return  true;}
 }
