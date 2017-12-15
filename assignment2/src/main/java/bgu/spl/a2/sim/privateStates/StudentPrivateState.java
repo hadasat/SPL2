@@ -3,6 +3,7 @@ package bgu.spl.a2.sim.privateStates;
 import bgu.spl.a2.PrivateState;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * this class describe student private state
@@ -34,5 +35,13 @@ public class StudentPrivateState extends PrivateState {
 		grades.put(name, grade);
 	}
 
-	public boolean removeGradeFromSheet()
+	public boolean removeGradeFromSheet(String name){
+		for(Map.Entry<String, Integer> grade : grades.entrySet()){
+			if(grade.getKey().equals(name)) {
+				grades.remove(name);
+				return true;
+			}
+		}
+		return false;
+	}
 }
