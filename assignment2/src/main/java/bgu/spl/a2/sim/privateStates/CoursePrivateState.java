@@ -51,4 +51,17 @@ public class CoursePrivateState extends PrivateState{
 	public void addRegister(){registered++;}
 
 	public void setRegistered(int num){registered = num;}
+
+	public boolean removeFromCourse(String name){
+		for(int i =0; i < regStudents.size() ; i++){
+			if(regStudents.get(i).equals(name)){
+				regStudents.remove(i);
+				registered--;
+				availableSpots++;
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
