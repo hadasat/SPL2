@@ -1,9 +1,9 @@
 package bgu.spl.a2.sim.privateStates;
 
+import bgu.spl.a2.PrivateState;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import bgu.spl.a2.PrivateState;
 
 /**
  * this class describe course's private state
@@ -24,6 +24,8 @@ public class CoursePrivateState extends PrivateState{
 	 * this may cause automatic tests to fail..
 	 */
 	public CoursePrivateState() {
+		availableSpots = new Integer(0);
+		registered = new Integer(0);
 		regStudents = new ArrayList<>();
 		prequisites = new ArrayList<>();
 	}
