@@ -33,4 +33,6 @@ public class StudentPrivateState extends PrivateState {
 	public void addGrade(String name, Integer grade) {
 		grades.put(name, grade);
 	}
+
+	public boolean removeGradeFromSheet()
 }
