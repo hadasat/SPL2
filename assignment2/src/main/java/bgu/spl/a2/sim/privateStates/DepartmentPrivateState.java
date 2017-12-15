@@ -29,5 +29,14 @@ public class DepartmentPrivateState extends PrivateState{
 	public List<String> getStudentList() {
 		return studentList;
 	}
-	
+
+	public void addStudent(String student){
+		studentList.add(student);
+	}
+
+	public void addCourse(String course){
+		courseList.add(course);
+	}
+
+
 }
