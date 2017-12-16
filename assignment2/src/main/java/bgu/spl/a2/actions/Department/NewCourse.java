@@ -32,7 +32,7 @@ public class NewCourse<Boolean> extends Action {
         numSubAction = subActions.size();
         then(subActions , ()->{
             ((DepartmentPrivateState)actorPS).addCourse(courseName);
-             promise.resolve(p.get());});
+             complete(p.get());});
 
         /*
         Action<Boolean> sub1 = new AddingCourseToDepartment(actorID);
