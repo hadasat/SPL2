@@ -17,6 +17,7 @@ public class NewCourse<Boolean> extends Action {
     protected void start() {
         Action<Boolean> sub1 = new SubCursToDep(ActorID);
         subActions.add(sub1);
-        then(subActions, ()-> {complete(sendMessage(sub1,department, new DepartmentPrivateState()).get());});
+        Promise prom = sendMessage(sub1,department, new DepartmentPrivateState());
+        then(subActions, ()-> {complete(prom.get());});
     }
 }
