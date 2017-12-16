@@ -48,6 +48,8 @@ public class CoursePrivateState extends PrivateState{
 
 	public void setAvailableSpots(Integer num){availableSpots = num;}
 
+	public void setPrequisites(List<String> preq){ prequisites = preq;}
+
 	public boolean addRegister(String student){
 		if(regStudents.add(student)) {
 			availableSpots--;
