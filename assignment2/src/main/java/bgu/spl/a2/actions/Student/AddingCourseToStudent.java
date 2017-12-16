@@ -1,4 +1,4 @@
-package bgu.spl.a2.actions;
+package bgu.spl.a2.actions.Student;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.PrivateState;
@@ -9,32 +9,30 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 import java.util.List;
 import java.util.Map;
 
-public class AddingStudentToCourse<Boolean> extends Action {
-    private String student;
-    private PrivateState priv;
-
-    public AddingStudentToCourse(String student, PrivateState priv){
-        this.student = student;
+public class AddingCourseToStudent<Boolean> extends Action {
+    private String course;
+    private CoursePrivateState priv;
+    private Integer grade;
+    public AddingCourseToStudent(String course, CoursePrivateState priv, Integer grade){
+        this.course = course;
         this.priv = priv;
+        this.grade = grade;
         promise = new Promise<Boolean>();
     }
     @Override
     protected void start() {
-        StudentPrivateState s = (StudentPrivateState)priv;
+        StudentPrivateState s = (StudentPrivateState)actorPS;
         Map<String,Integer> map = s.getGrades();
-        CoursePrivateState p = (CoursePrivateState) actorPS;
-        if(p.getAvailableSpots().intValue() == 0){
-            promise.resolve(false);
-            return;
-        }
-        List<String> prequisites = p.getPrequisites();
+
+        List<String> prequisites = priv.getPrequisites();
         for (String pre : prequisites) {
             if (!map.containsKey(pre)) {
                 promise.resolve(false);
                 return;
             }
         }
-        promise.resolve(p.addRegister(student));
+        s.addGrade(course, grade);
+        promise.resolve(true);
         return;
     }
 }

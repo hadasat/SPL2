@@ -1,16 +1,23 @@
-package bgu.spl.a2.actions;
+package bgu.spl.a2.actions.Department;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.Promise;
+import bgu.spl.a2.actions.stubAction;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
+
+import java.util.List;
 
 public class NewCourse<Boolean> extends Action {
 
     String courseName;
+    Integer availbleSpaces;
+    List<String> prerequisites;
 
-    public NewCourse(String CourseName){
+    public NewCourse(String CourseName, Integer avPlaces, List<String> preq){
         this.courseName = courseName;
+        availbleSpaces= avPlaces;
+        prerequisites = preq;
         promise = new Promise<Boolean>();
     }
 
@@ -18,13 +25,15 @@ public class NewCourse<Boolean> extends Action {
     protected void start() {
         stubAction courseOpen = new stubAction(true);
         CoursePrivateState newCourse =new CoursePrivateState();
+        newCourse.setAvailableSpots(availbleSpaces);
+        newCourse.setPrequisites(prerequisites);
         Promise p = sendMessage(courseOpen,courseName,newCourse);
         subActions.add(courseOpen);
         numSubAction = subActions.size();
         then(subActions , ()->{
             ((DepartmentPrivateState)actorPS).addCourse(courseName);
-             promise.resolve(p.get());});
-        
+             complete(p.get());});
+
         /*
         Action<Boolean> sub1 = new AddingCourseToDepartment(actorID);
         subActions.add(sub1);

@@ -97,4 +97,15 @@ public class Promise<T>{
 		else
 			callback.call();
 	}
+
+	/*package*/ final void reresolve(T value){
+		if(!isResolved())
+			throw new IllegalStateException("the promise has been resolved");
+		resulte = value;
+		for(callback call: callbacksList){
+			call.call();
+		}
+		callbacksList.clear();
+
+	}
 }
