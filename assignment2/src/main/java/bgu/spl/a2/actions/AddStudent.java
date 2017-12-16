@@ -5,6 +5,7 @@ import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class AddStudent<Boolean> extends Action {
+
     private String dep;
 
     public AddStudent(String dep){
@@ -14,10 +15,11 @@ public class AddStudent<Boolean> extends Action {
 
     @Override
     protected void start() {
-        SubStudToDep sub1 = new SubStudToDep(dep);
+        AddingStudentToDepartment sub1 = new AddingStudentToDepartment(dep);
         subActions.add(sub1);
         numSubAction = subActions.size();
         Promise prom = sendMessage(sub1,dep, new DepartmentPrivateState());
         then(subActions, ()-> {complete(prom.get());});
+
     }
 }

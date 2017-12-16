@@ -1,23 +1,31 @@
 package bgu.spl.a2.actions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Unregister extends Action {
 
-    CoursePrivateState coursPS;
+    String student;
 
-    public Unregister(CoursePrivateState coursPS, StudentPrivateState studentPS){
-        this.coursPS = coursPS;
-        ActorPS = studentPS;
+    public Unregister(String student){
+        this.student = student;
     }
-
-
-    // TODO: 16/12/2017  finish start
 
     @Override
     protected void start() {
+        CoursePrivateState coursePS =(CoursePrivateState) actorPS;
+        coursePS.removeFromCourse(student);
+        StudentPrivateState studentPS = new StudentPrivateState();
+        DeleteStudentCourse sub1 = new DeleteStudentCourse(actorID);
+        List<Action> subsActions = new ArrayList<>();
+        subsActions.add(sub1);
+        Promise p = sendMessage(sub1,student,studentPS);
+        then(subsActions,()-> {complete(p.get());});
 
     }
 }

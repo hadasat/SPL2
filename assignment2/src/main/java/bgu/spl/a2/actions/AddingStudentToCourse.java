@@ -9,11 +9,11 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 import java.util.List;
 import java.util.Map;
 
-public class SubStudToCurs<Boolean> extends Action {
+public class AddingStudentToCourse<Boolean> extends Action {
     private String student;
     private PrivateState priv;
 
-    public  SubStudToCurs(String student, PrivateState priv){
+    public AddingStudentToCourse(String student, PrivateState priv){
         this.student = student;
         this.priv = priv;
         promise = new Promise<Boolean>();
@@ -22,7 +22,7 @@ public class SubStudToCurs<Boolean> extends Action {
     protected void start() {
         StudentPrivateState s = (StudentPrivateState)priv;
         Map<String,Integer> map = s.getGrades();
-        CoursePrivateState p = (CoursePrivateState)ActorPS;
+        CoursePrivateState p = (CoursePrivateState) actorPS;
         if(p.getAvailableSpots().intValue() == 0){
             promise.resolve(false);
             return;

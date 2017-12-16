@@ -9,7 +9,6 @@ public class PartInCourse extends Action {
     private Integer grade;
     private String course;
 
-
     public  PartInCourse(Integer grade, String course){
         this.grade = grade;
         this.course = course;
@@ -17,13 +16,13 @@ public class PartInCourse extends Action {
     }
     @Override
     protected void start() {
-        Action<Boolean> sub1 = new SubStudToCurs(ActorID, ActorPS);
+        Action<Boolean> sub1 = new AddingStudentToCourse(actorID, actorPS);
         subActions.add(sub1);
         numSubAction = subActions.size();
         Promise prom = sendMessage(sub1,course, new CoursePrivateState());
         then(subActions, ()-> {
             if((Boolean)prom.get()){
-                StudentPrivateState st = (StudentPrivateState)ActorPS;
+                StudentPrivateState st = (StudentPrivateState) actorPS;
                 st.addGrade(course, grade);
             }
             complete(prom.get());

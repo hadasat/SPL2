@@ -20,8 +20,8 @@ public abstract class Action<R> {
     protected Promise<R> promise;
     protected ConcurrentLinkedQueue <Action> subActions;
     protected int numSubAction;
-    protected String ActorID;
-    protected PrivateState ActorPS;
+    protected String actorID;
+    protected PrivateState actorPS;
     protected AtomicBoolean hasStarted;
     protected ActorThreadPool pool;
 	/**.
@@ -46,8 +46,8 @@ public abstract class Action<R> {
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
         if(hasStarted.compareAndSet(false,true)){
             this.subActions = new ConcurrentLinkedQueue<>();
-            this.ActorID = actorId;
-            this.ActorPS = actorState;
+            this.actorID = actorId;
+            this.actorPS = actorState;
             this.pool = pool;
             this.start();
         }
@@ -79,7 +79,7 @@ public abstract class Action<R> {
     public synchronized void down(){
             numSubAction--;
             if(numSubAction <= 0){
-                pool.submit(this, ActorID, ActorPS);
+                pool.submit(this, actorID, actorPS);
             }
     }
     /**
@@ -88,6 +88,7 @@ public abstract class Action<R> {
      *
      * @param result - the action calculated result
      */
+
     protected final void complete(R result) {
        	promise.resolve(result);
     }
