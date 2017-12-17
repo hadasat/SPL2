@@ -2,7 +2,7 @@ package bgu.spl.a2.actions.Department;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.Promise;
-import bgu.spl.a2.actions.stubAction;
+import bgu.spl.a2.actions.StubAction;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
@@ -23,7 +23,7 @@ public class NewCourse<Boolean> extends Action {
 
     @Override
     protected void start() {
-        stubAction courseOpen = new stubAction(true);
+        StubAction courseOpen = new StubAction(true);
         CoursePrivateState newCourse =new CoursePrivateState();
         newCourse.setAvailableSpots(availbleSpaces);
         newCourse.setPrequisites(prerequisites);

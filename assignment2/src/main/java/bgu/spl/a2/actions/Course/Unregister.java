@@ -23,8 +23,8 @@ public class Unregister extends Action {
         numSubAction = subActions.size();
         Promise p = sendMessage(sub1,student,studentPS);
         then(subActions,()-> {
-            if(coursePS.removeFromCourse(student))
-                complete(p.get());
+            if(p.get().equals(true))
+                complete(coursePS.removeFromCourse(student));
             else
                 complete (false);});
     }

@@ -132,5 +132,9 @@ public class ActorThreadPool {
 		}
 	}
 
+	public PrivateState getPrivateState(String key){
+		return data.get(key);
+	}
+
 }
 

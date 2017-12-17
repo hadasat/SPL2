@@ -6,6 +6,7 @@ import bgu.spl.a2.actions.Course.PartInCourse;
 import bgu.spl.a2.callback;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,9 +14,10 @@ import java.util.List;
  */
 public class Preference extends Action {
 
-    Integer index;
-    String student;
-    List<String> pref;
+    private Integer index;
+    private String student;
+    private List<String> pref;
+    private callback backup;
 
     public Preference(String student, List<String> pref){
         index = new Integer(0);
@@ -26,11 +28,28 @@ public class Preference extends Action {
     @Override
 
     protected void start() {
-
-
-
-
-
+        if(pref.size() == 0) {
+            complete(false);
+            return;
+        }
+        PartInCourse part = new PartInCourse(null, student);
+        subActions.add(part);
+        numSubAction = subActions.size();
+        String curr = pref.get(0);
+        pref.remove(0);
+        List<Promise> prom = new LinkedList<>();
+        prom.add(sendMessage(part, curr, new CoursePrivateState()));
+        then(subActions, ()->{
+            if(prom.get(prom.size()-1).get().equals(true)){
+                complete(true);
+                return;
+            }
+            Preference pre = new Preference(student, pref);
+            prom.add(sendMessage(pre, actorID, actorPS));
+            subActions.add(pre);
+            numSubAction++;
+            then(subActions, finalCallBack);//ulay leapes et subactions lifnei
+        });
         /*
         if(index.intValue() >= pref.size()) {
             complete(false);

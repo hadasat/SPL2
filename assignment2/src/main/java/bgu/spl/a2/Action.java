@@ -116,6 +116,8 @@ public abstract class Action<R> {
         pool.submit(action,actorId,actorState);
         return action.promise;
 	}
-	
 
+    public Promise<R> getPromise() {
+        return promise;
+    }
 }

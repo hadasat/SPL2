@@ -6,11 +6,11 @@ import bgu.spl.a2.Promise;
 /**
  * Created by מחשב on 16/12/2017.
  */
-public class stubAction extends Action {
+public class StubAction<R> extends Action {
 
-    boolean result;
+    R result;
 
-    public stubAction(boolean result){
+    public StubAction(R result){
         this.result = result;
         promise = new Promise();
     }

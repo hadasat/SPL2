@@ -2,7 +2,7 @@ package bgu.spl.a2.actions.Department;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.Promise;
-import bgu.spl.a2.actions.stubAction;
+import bgu.spl.a2.actions.StubAction;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
@@ -17,7 +17,7 @@ public class AddStudent<Boolean> extends Action {
 
     @Override
     protected void start() {
-        stubAction sub1 = new stubAction(true);
+        StubAction sub1 = new StubAction(true);
         subActions.add(sub1);
         numSubAction = subActions.size();
         Promise prom = sendMessage(sub1,studentName, new StudentPrivateState());

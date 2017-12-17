@@ -1,6 +1,10 @@
 package bgu.spl.a2.sim;
 import bgu.spl.a2.Promise;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * 
  * this class is related to {@link Computer}
@@ -11,14 +15,18 @@ import bgu.spl.a2.Promise;
  *
  */
 public class SuspendingMutex {
-	
+	Computer computer;
+	AtomicBoolean flag;
+	Queue<Promise> promises;
+
 	/**
 	 * Constructor
 	 * @param computer
 	 */
 	public SuspendingMutex(Computer computer){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		this.computer = computer;
+		flag = new AtomicBoolean(true);
+		promises = new ArrayDeque<>();
 	}
 	/**
 	 * Computer acquisition procedure
@@ -27,15 +35,31 @@ public class SuspendingMutex {
 	 * @return a promise for the requested computer
 	 */
 	public Promise<Computer> down(){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(!flag.compareAndSet(true, false)){
+			Promise newPromise = new Promise();
+			newPromise.subscribe(this::down);
+			promises.add(newPromise);
+			return newPromise;
+		}
+		Promise<Computer> prom = new Promise<>();
+		prom.resolve(computer);
+		return prom;
 	}
 	/**
 	 * Computer return procedure
 	 * releases a computer which becomes available in the warehouse upon completion
 	 */
 	public void up(){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(!flag.compareAndSet(false, true))
+			throw new RuntimeException("already released kapara");
+		for (Promise pro : promises){
+			if(!pro.isResolved())
+				pro.resolve(computer);
+		}
+		promises.clear();
+	}
+
+	public Computer getComputer() {
+		return computer;
 	}
 }
