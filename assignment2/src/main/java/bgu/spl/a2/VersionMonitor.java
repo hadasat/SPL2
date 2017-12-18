@@ -1,9 +1,5 @@
 package bgu.spl.a2;
 
-import com.sun.org.apache.xerces.internal.parsers.CachingParserPool;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Describes a monitor that supports the concept of versioning - its idea is
  * simple, the monitor has a version number which you can receive via the method
@@ -21,25 +17,43 @@ import java.util.concurrent.atomic.AtomicInteger;
  * methods
  */
 public class VersionMonitor {
-
-    private AtomicInteger version;
+    private ActorThreadPool pool;
+    private int version;
+    private final  Object sync = new Object();
+    int await;
 
     public VersionMonitor(){
-        version = new AtomicInteger(0);
+        pool = null;
+        await = 0;
+        version = (0);
+    }
+
+    public void addActorThreadPool(ActorThreadPool pool){
+
+        this.pool = pool;
     }
 
     public int getVersion() {
-        return version.get();
+        return version;
     }
 
     public void inc() {
-        version.incrementAndGet();
-        notifyAll();
+        synchronized (sync){
+            version++;
+            await = 0;
+            sync.notifyAll();
+        }
     }
 
-    public synchronized void await(int version) throws InterruptedException {
-        while(this.version.equals(version)) {
-            this.wait();
+    public void await(int version) throws InterruptedException {
+        synchronized (sync) {
+            if(await == pool.getThreads().length-1) {
+                while (this.version == (version))
+                {
+                    await++;
+                    sync.wait();
+                }
+            }
         }
     }
 }

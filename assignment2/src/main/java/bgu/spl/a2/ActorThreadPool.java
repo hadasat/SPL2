@@ -23,6 +23,7 @@ public class ActorThreadPool {
 	private ConcurrentHashMap<String,AtomicBoolean> avilableActor;
 	private Thread[] threads;
 	private AtomicBoolean entity;
+	private boolean shutDown;
 
 	public Map<String,ConcurrentLinkedQueue<bgu.spl.a2.Action>> getActor(){return actors;}
 	public Map<String,PrivateState> getData(){return data;}
@@ -42,7 +43,9 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	public ActorThreadPool(int nthreads) {
+		shutDown = false;
 		version = new VersionMonitor();
+		version.addActorThreadPool(this);
 		size = nthreads;
 		actors = new ConcurrentHashMap();
 		data = new ConcurrentHashMap();
@@ -96,9 +99,12 @@ public class ActorThreadPool {
 	 * @throws InterruptedException
 	 *             if the thread that shut down the threads is interrupted
 	 */
-	public void shutdown() throws InterruptedException {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+	synchronized public void shutdown() throws InterruptedException {
+		shutDown = true;
+		version.inc();
+		for (int i = 0; i < threads.length; i ++){
+			threads[i].join();
+		}
 	}
 
 	/**
@@ -113,22 +119,25 @@ public class ActorThreadPool {
 	}
 
 	public void execute() {
-		boolean wait = false;
-		for (Map.Entry<String, AtomicBoolean> entry : avilableActor.entrySet()) {
-			if (entry.getValue().compareAndSet(true, false)) {
-				ConcurrentLinkedQueue q = actors.get(entry.getKey());
-				PrivateState p = data.get(entry.getKey());
-				Action a = (Action) q.poll();
-				a.handle(this, entry.getKey(), p);
-				entity.compareAndSet(false, true);
-				version.inc();
-				wait = true;
+		while(!shutDown) {
+			boolean wait = false;
+			for (Map.Entry<String, AtomicBoolean> entry : avilableActor.entrySet()) {
+				if (entry.getValue().compareAndSet(true, false)) {
+					ConcurrentLinkedQueue q = actors.get(entry.getKey());
+					PrivateState p = data.get(entry.getKey());
+					Action a = (Action) q.poll();
+					a.handle(this, entry.getKey(), p);
+					entity.compareAndSet(false, true);
+					version.inc();
+					wait = true;
+				}
 			}
-		}
-		if (!wait) {
-			try {
-				version.await(version.getVersion());
-			} catch (InterruptedException e) {}
+			if (!wait) {
+				try {
+					version.await(version.getVersion());
+				} catch (InterruptedException e) {
+				}
+			}
 		}
 	}
 

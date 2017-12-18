@@ -22,7 +22,7 @@ public abstract class Action<R> {
     protected int numSubAction;
     protected String actorID;
     protected PrivateState actorPS;
-    protected AtomicBoolean hasStarted;
+    protected AtomicBoolean hasStarted = new AtomicBoolean(false);
     protected ActorThreadPool pool;
 	/**.
      * start handling the action - note that this method is protected, a thread

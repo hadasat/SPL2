@@ -37,7 +37,7 @@ public class SuspendingMutex {
 	public Promise<Computer> down(){
 		if(!flag.compareAndSet(true, false)){
 			Promise newPromise = new Promise();
-			newPromise.subscribe(this::down);
+			newPromise.subscribe(()->{});
 			promises.add(newPromise);
 			return newPromise;
 		}
