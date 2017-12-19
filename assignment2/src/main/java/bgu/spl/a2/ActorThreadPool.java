@@ -145,5 +145,17 @@ public class ActorThreadPool {
 		return data.get(key);
 	}
 
+
+	public void setThreads(int num){
+		if(!entity.get()){
+			size = num;
+			threads = new Thread[size];
+			for(int i=0; i<size ; i++){
+				Thread t = new Thread(runnable);
+				threads[i] = t;
+			}
+		}
+
+	}
 }
 
