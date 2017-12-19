@@ -60,6 +60,7 @@ public class PromiseTest {
 			assertTrue(!b);
 			try{
 				p.resolve(5);
+				b = p.isResolved();
 				assertTrue(b);
 			}
 			catch(Exception ex){

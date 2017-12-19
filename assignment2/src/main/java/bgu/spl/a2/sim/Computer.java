@@ -29,4 +29,8 @@ public class Computer {
 		}
 		return successSig;
 	}
+
+	public String getComputerType() {
+		return computerType;
+	}
 }

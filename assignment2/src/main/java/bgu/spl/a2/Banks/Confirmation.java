@@ -1,6 +1,7 @@
 package bgu.spl.a2.Banks;
 import bgu.spl.a2.Action;
 import bgu.spl.a2.PrivateState;
+import bgu.spl.a2.Promise;
 
 import java.util.*;
 
@@ -18,14 +19,14 @@ public class Confirmation extends Action<Boolean> {
         this.reciver=reciver;
         this.reciverBank=reciverBank;
         this.bankStates=bankStates;
+        this.promise = new Promise<Boolean>();
     }
 
     protected void start(){
         List<Action<Boolean>> actions = new ArrayList <>();
-        then(actions, ()-> {
-            System.out.println("Confirmation complete has been called");
+
             complete(true);
-        });
+
     }
 
 }

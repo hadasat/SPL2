@@ -37,7 +37,6 @@ public class SuspendingMutex {
 	public Promise<Computer> down(){
 		if(!flag.compareAndSet(true, false)){
 			Promise newPromise = new Promise();
-			newPromise.subscribe(()->{});
 			promises.add(newPromise);
 			return newPromise;
 		}
@@ -52,11 +51,9 @@ public class SuspendingMutex {
 	public void up(){
 		if(!flag.compareAndSet(false, true))
 			throw new RuntimeException("already released kapara");
-		for (Promise pro : promises){
-			if(!pro.isResolved())
-				pro.resolve(computer);
-		}
-		promises.clear();
+		Promise<Computer> current = promises.poll();
+		if(current != null)
+			current.resolve(computer);
 	}
 
 	public Computer getComputer() {

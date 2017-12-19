@@ -1,8 +1,5 @@
 package bgu.spl.a2.sim;
 
-import bgu.spl.a2.Promise;
-import bgu.spl.a2.actions.Department.CheckObs;
-
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -24,13 +21,10 @@ public class Warehouse {
         }
     }
 
-    public SuspendingMutex allocate(CheckObs check) {
+    public SuspendingMutex allocate(String computerType) {
         for (SuspendingMutex sus : suspendings) {
-
-            Promise<Computer> prom = sus.down();
-            if(prom.isResolved())
+            if(sus.getComputer().getComputerType().equals(computerType))
                 return sus;
-
         }
         return  null;
     }

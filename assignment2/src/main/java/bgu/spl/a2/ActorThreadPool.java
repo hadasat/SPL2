@@ -81,7 +81,7 @@ public class ActorThreadPool {
 				return;
 			}
 		}
-		ConcurrentLinkedQueue q = new ConcurrentLinkedQueue();
+		ConcurrentLinkedQueue<Action> q = new ConcurrentLinkedQueue();
 		q.add(action);
 		actors.put(actorId, q);
 		data.put(actorId, actorState);
@@ -123,11 +123,11 @@ public class ActorThreadPool {
 			boolean wait = false;
 			for (Map.Entry<String, AtomicBoolean> entry : avilableActor.entrySet()) {
 				if (entry.getValue().compareAndSet(true, false)) {
-					ConcurrentLinkedQueue q = actors.get(entry.getKey());
+					ConcurrentLinkedQueue<Action> q = actors.get(entry.getKey());
 					PrivateState p = data.get(entry.getKey());
-					Action a = (Action) q.poll();
-					a.handle(this, entry.getKey(), p);
-					entity.compareAndSet(false, true);
+					Action a = q.poll();
+					if(a != null) a.handle(this, entry.getKey(), p);
+					entry.getValue().compareAndSet(false, true);
 					version.inc();
 					wait = true;
 				}

@@ -69,10 +69,12 @@ public abstract class Action<R> {
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
        	finalCallBack = callback;
-       	if(actions != null) {
-            for (Action ac : actions) {
-                ac.promise.subscribe(this::down);
-            }
+       	if(actions == null || actions.size() == 0) {
+            finalCallBack.call();
+            return;
+        }
+        for (Action ac : actions) {
+            ac.promise.subscribe(this::down);
         }
     }
 
