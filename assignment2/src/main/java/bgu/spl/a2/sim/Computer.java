@@ -21,6 +21,7 @@ public class Computer {
 	 * 							courses' grade
 	 * @return a signature if couersesGrades grades meet the conditions
 	 */
+
 	public long checkAndSign(List<String> courses, Map<String, Integer> coursesGrades){
 		for(String course : courses){
 			Integer i = coursesGrades.get(course);

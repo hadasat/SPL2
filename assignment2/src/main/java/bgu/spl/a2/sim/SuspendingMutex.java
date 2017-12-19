@@ -15,9 +15,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  */
 public class SuspendingMutex {
+
 	Computer computer;
 	AtomicBoolean flag;
 	Queue<Promise> promises;
+
 
 	/**
 	 * Constructor
@@ -28,12 +30,14 @@ public class SuspendingMutex {
 		flag = new AtomicBoolean(true);
 		promises = new ArrayDeque<>();
 	}
+
 	/**
 	 * Computer acquisition procedure
 	 * Note that this procedure is non-blocking and should return immediatly
 	 * 
 	 * @return a promise for the requested computer
 	 */
+
 	public Promise<Computer> down(){
 		if(!flag.compareAndSet(true, false)){
 			Promise newPromise = new Promise();

@@ -6,14 +6,12 @@
 package bgu.spl.a2.sim;
 
 import bgu.spl.a2.ActorThreadPool;
-import bgu.spl.a2.GsonFiles.UniversitySystem;
 import bgu.spl.a2.PrivateState;
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A class describing the simulator for part 2 of the assignment
@@ -21,19 +19,24 @@ import java.util.HashMap;
 public class Simulator {
 
 	
-	public static ActorThreadPool actorThreadPool;
+	public static ActorThreadPool actorThreadPool = new ActorThreadPool(0);
 	
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
+
     public static void start(){
-		Gson gson = new Gson();
+
+			Gson gson = new Gson();
 		try {
-			JsonReader reader = new JsonReader(new FileReader("C:\\Users\\Itay\\Desktop\\school\\spl\\Spl2\\new\\SPL2\\assignment2\\src\\main\\java\\bgu\\spl\\a2\\GsonFiles\\gsonFile.txt"));
-			UniversitySystem uniSystem = gson.fromJson(reader, UniversitySystem.class);
-			System.out.println("good");
+			UniversitySystem uniSystem = gson.fromJson(new FileReader("C:\\hadas\\semester_3\\newSPL\\SPL2\\assignment2\\src\\main\\java\\bgu\\spl\\a2\\GsonFiles\\gsonFile.txt"), UniversitySystem.class);
+			List<GenralAction> p1 = uniSystem.phase1, p2 = uniSystem.phase2, p3 = uniSystem.phase3;
+			List<StingComputer> computers = uniSystem.Computers;
+			String thread = uniSystem.threads;
+			ActorThreadPool pool = new ActorThreadPool(Integer.getInteger(thread));
+
 		}
-		catch (IOException e){}
+		catch (Exception e){}
 
     }
 	
@@ -42,7 +45,8 @@ public class Simulator {
 	* 
 	* @param myActorThreadPool - the ActorThreadPool which will be used by the simulator
 	*/
-	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool){
+	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool)
+	{
 		actorThreadPool = myActorThreadPool;
 	}
 	
@@ -51,12 +55,10 @@ public class Simulator {
 	* returns list of private states
 	*/
 	public static HashMap<String,PrivateState> end(){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		return (HashMap<String, PrivateState>) actorThreadPool.getData();
 	}
 	
-	
-	public static void main(String [] args){
-	 start();
+	public static int main(String [] args){
+		start();
 	}
 }
