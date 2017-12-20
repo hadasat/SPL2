@@ -5,16 +5,16 @@ import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 public class OpenPlaceInCourse extends Action {
-    String course;
+    Integer places;
 
-    public OpenPlaceInCourse(String course){
-        this.course = course;
+    public OpenPlaceInCourse(Integer places){
+        this.places = places;
         promise = new Promise();
     }
     @Override
     protected void start() {
         CoursePrivateState priv = (CoursePrivateState)actorPS;
-        priv.setAvailableSpots(priv.getAvailableSpots()+1);
+        priv.setAvailableSpots(priv.getAvailableSpots()+places.intValue());
         complete(true);
     }
 }

@@ -122,4 +122,8 @@ public abstract class Action<R> {
     public Promise<R> getPromise() {
         return promise;
     }
+
+    public void subscribe(callback c){
+	    promise.subscribe(c);
+    }
 }

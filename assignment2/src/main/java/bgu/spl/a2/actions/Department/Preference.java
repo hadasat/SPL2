@@ -12,18 +12,24 @@ import java.util.List;
 /**
  * Created by מחשב on 16/12/2017.
  */
-public class Preference extends Action {
+public class Preference<R> extends Action {
 
-    private Integer index;
-    private String student;
-    private List<String> pref;
-    private callback backup;
+    Integer index;
+    String student;
+    List<String> pref;
+    List<String> grades;
 
-    public Preference(String student, List<String> pref){
+    public Preference(String student, List<String> pref, List<String> grades){
         index = new Integer(0);
         this.student = student;
         this.pref = pref;
-        promise = new Promise();
+        this.grades = grades;
+        promise = new Promise<R>();
+    }
+
+
+    private void ezer(){
+        numSubAction = 1;
     }
     @Override
 
@@ -32,47 +38,27 @@ public class Preference extends Action {
             complete(false);
             return;
         }
-        PartInCourse part = new PartInCourse(null, student);
+
+        String curr = pref.remove(0);
+        Integer grade = Integer.parseInt(grades.remove(0));
+        PartInCourse part = new PartInCourse(grade, student);
         subActions.add(part);
-        numSubAction = subActions.size();
-        String curr = pref.get(0);
-        pref.remove(0);
-        List<Promise> prom = new LinkedList<>();
-        prom.add(sendMessage(part, curr, new CoursePrivateState()));
+        numSubAction = 1;
+        Promise prom = sendMessage(part, curr, new CoursePrivateState());
         then(subActions, ()->{
-            if(prom.get(prom.size()-1).get().equals(true)){
-                complete(true);
+            if(!prom.get().equals(false)){
+                complete(prom.get());
                 return;
             }
-            Preference pre = new Preference(student, pref);
-            prom.add(sendMessage(pre, actorID, actorPS));
+            Preference pre = new Preference(student, pref, grades);
+            subActions.clear();
             subActions.add(pre);
-            numSubAction++;
-            then(subActions, finalCallBack);//ulay leapes et subactions lifnei
-        });
-        /*
-        if(index.intValue() >= pref.size()) {
-            complete(false);
-            return;
-        }
-        PartInCourse part = new PartInCourse(null, student);
-        subActions.add(part);
-        numSubAction = subActions.size();
-        Promise prom = sendMessage(part, pref.get(index), new CoursePrivateState());
-        then(subActions,()->{
-                if(prom.get().equals(true)){
-                    complete(true);
-                    return;
-                }
-                if(index++ >= pref.size()){
-                    complete(false);
-                    return;
-                }
-                numSubAction = 1;
-                prom.sendMessage(part, pref.get(index), new CoursePrivateState());
-                then(subActions, finalCallBack);
+            ezer();//meathelim et numsubaction le 1
+            Promise newpromise = sendMessage(pre, actorID, actorPS);
+            then(subActions, ()->{
+                complete(newpromise.get());
             });
-            */
+        });
     }
 
 }

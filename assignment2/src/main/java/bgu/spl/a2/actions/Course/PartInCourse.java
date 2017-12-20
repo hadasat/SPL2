@@ -6,14 +6,14 @@ import bgu.spl.a2.actions.Student.AddingCourseToStudent;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
-public class PartInCourse<Boolean> extends Action {
+public class PartInCourse extends Action {
     private Integer grade;
     private String student;
 
     public  PartInCourse(Integer grade, String student){
         this.grade = grade;
         this.student = student;
-        promise = new Promise<Boolean>();
+        promise = new Promise();
     }
     @Override
     protected void start() {
@@ -27,10 +27,12 @@ public class PartInCourse<Boolean> extends Action {
         numSubAction = subActions.size();
         Promise prom = sendMessage(sub1, student, new StudentPrivateState());
         then(subActions, ()-> {
-            if((prom.get()).equals(true) && c.addRegister(student))
-                complete(prom.get());
-            else
+            if((prom.get()).equals(false))
                 complete(false);
+            else {
+                c.addRegister(student);
+                complete(actorID);
+            }
         });
 
 

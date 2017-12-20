@@ -5,13 +5,23 @@
  */
 package bgu.spl.a2.sim;
 
+import bgu.spl.a2.Action;
 import bgu.spl.a2.ActorThreadPool;
 import bgu.spl.a2.PrivateState;
+import bgu.spl.a2.actions.Course.OpenPlaceInCourse;
+import bgu.spl.a2.actions.Course.PartInCourse;
+import bgu.spl.a2.actions.Course.Unregister;
+import bgu.spl.a2.actions.Department.*;
+import bgu.spl.a2.sim.privateStates.CoursePrivateState;
+import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
+import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 import com.google.gson.Gson;
 
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * A class describing the simulator for part 2 of the assignment
@@ -32,14 +42,185 @@ public class Simulator {
 			UniversitySystem uniSystem = gson.fromJson(new FileReader("C:\\hadas\\semester_3\\newSPL\\SPL2\\assignment2\\src\\main\\java\\bgu\\spl\\a2\\GsonFiles\\gsonFile.txt"), UniversitySystem.class);
 			List<GenralAction> p1 = uniSystem.phase1, p2 = uniSystem.phase2, p3 = uniSystem.phase3;
 			List<StingComputer> computers = uniSystem.Computers;
+            ConcurrentLinkedQueue<Computer> q = new ConcurrentLinkedQueue();
+			//create the computers
+            for(StingComputer com : computers){
+			    Computer toenter = com.getComputer();
+			    q.add(toenter);
+            }
+            Warehouse warehouse = Warehouse.getInstance();
+			warehouse.setMutex(q);
 			String thread = uniSystem.threads;
 			ActorThreadPool pool = new ActorThreadPool(Integer.getInteger(thread));
+			pool.start();
+            //create the actions
+            CountDownLatch count = new CountDownLatch(p1.size());
+			for(GenralAction action : p1){
+			    Action cur = null;
+                switch (action.Action) {
 
+                    case ("Open Course"):
+                        cur = new NewCourse(action.Course, Integer.parseInt(action.Space), action.Prerequisites);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                    case ("Add Student"):
+                        cur = new AddStudent(action.Student);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                    case ("Participate In Course"):
+                        cur = new PartInCourse(Integer.parseInt(action.Grade.get(0)), action.Student);
+                        pool.submit(cur, action.Course, new CoursePrivateState());
+                        break;
+                    case ("Add Spaces"):
+                        cur = new OpenPlaceInCourse(Integer.parseInt(action.Number));
+                        pool.submit(cur, action.Course, new CoursePrivateState());
+                        break;
+                    case ("Register With Preferences"):
+                        cur = new Preference(action.Student, action.Preferences, action.Grade);
+                        pool.submit(cur, action.Student, new StudentPrivateState());
+                        break;
+                    case ("Unregister"):
+                        cur = new Unregister(action.Student);
+                        pool.submit(cur, action.Course, new CoursePrivateState());
+                        break;
+                    case ("Close Course"):
+                        cur = new CloseCourse(action.Course);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                    case ("Administrative Check"):
+                        cur = new CheckObs(action.Conditions, warehouse, action.Computer, action.Students);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                }
+                if(cur == null){
+                    throw  new RuntimeException("??");
+                }
+                else{
+                    cur.subscribe(()->{
+                        count.countDown();
+                        if(count.getCount() == 0){
+                            phaseTwo(pool, warehouse, p2, p3);
+                        }
+                    });
+                }
+            }
 		}
 		catch (Exception e){}
 
     }
-	
+
+    public static void phaseTwo(ActorThreadPool pool, Warehouse warehouse, List<GenralAction> p2, List<GenralAction> p3){
+        CountDownLatch count = new CountDownLatch(p2.size());
+        for(GenralAction action : p2){
+            Action cur = null;
+            switch (action.Action) {
+
+                case ("Open Course"):
+                    cur = new NewCourse(action.Course, Integer.parseInt(action.Space), action.Prerequisites);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+                case ("Add Student"):
+                    cur = new AddStudent(action.Student);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+                case ("Participate In Course"):
+                    Integer grade;
+                    if(action.Grade.get(0).equals("-"))
+                        grade = null;
+                    else
+                        grade = Integer.parseInt(action.Grade.get(0));
+                    cur = new PartInCourse(grade, action.Student);
+                    pool.submit(cur, action.Course, new CoursePrivateState());
+                    break;
+                case ("Add Spaces"):
+                    cur = new OpenPlaceInCourse(Integer.parseInt(action.Number));
+                    pool.submit(cur, action.Course, new CoursePrivateState());
+                    break;
+                case ("Register With Preferences"):
+                    cur = new Preference(action.Student, action.Preferences, action.Grade);
+                    pool.submit(cur, action.Student, new StudentPrivateState());
+                    break;
+                case ("Unregister"):
+                    cur = new Unregister(action.Student);
+                    pool.submit(cur, action.Course, new CoursePrivateState());
+                    break;
+                case ("Close Course"):
+                    cur = new CloseCourse(action.Course);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+                case ("Administrative Check"):
+                    cur = new CheckObs(action.Conditions, warehouse, action.Computer, action.Students);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+            }
+            if(cur == null){
+                throw  new RuntimeException("??");
+            }
+            else{
+                cur.subscribe(()->{
+                    count.countDown();
+                    if(count.getCount() == 0){
+                        phaseThree(pool, warehouse, p3);
+                    }
+                });
+            }
+        }
+    }
+
+    public static void phaseThree(ActorThreadPool pool, Warehouse warehouse, List<GenralAction> p3){
+        CountDownLatch count = new CountDownLatch(p3.size());
+        for(GenralAction action : p3){
+            Action cur = null;
+            switch (action.Action) {
+
+                case ("Open Course"):
+                    cur = new NewCourse(action.Course, Integer.parseInt(action.Space), action.Prerequisites);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+                case ("Add Student"):
+                    cur = new AddStudent(action.Student);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+                case ("Participate In Course"):
+                    cur = new PartInCourse(Integer.parseInt(action.Grade.get(0)), action.Student);
+                    pool.submit(cur, action.Course, new CoursePrivateState());
+                    break;
+                case ("Add Spaces"):
+                    cur = new OpenPlaceInCourse(Integer.parseInt(action.Number));
+                    pool.submit(cur, action.Course, new CoursePrivateState());
+                    break;
+                case ("Register With Preferences"):
+                    cur = new Preference(action.Student, action.Preferences, action.Grade);
+                    pool.submit(cur, action.Student, new StudentPrivateState());
+                    break;
+                case ("Unregister"):
+                    cur = new Unregister(action.Student);
+                    pool.submit(cur, action.Course, new CoursePrivateState());
+                    break;
+                case ("Close Course"):
+                    cur = new CloseCourse(action.Course);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+                case ("Administrative Check"):
+                    cur = new CheckObs(action.Conditions, warehouse, action.Computer, action.Students);
+                    pool.submit(cur, action.Department, new DepartmentPrivateState());
+                    break;
+            }
+            if(cur == null){
+                throw  new RuntimeException("??");
+            }
+            else{
+                cur.subscribe(()->{
+                    count.countDown();
+                    if(count.getCount() == 0){
+                        return;
+                    }
+                });
+            }
+        }
+    }
+
+
 	/**
 	* attach an ActorThreadPool to the Simulator, this ActorThreadPool will be used to run the simulation
 	* 
@@ -60,5 +241,7 @@ public class Simulator {
 	
 	public static int main(String [] args){
 		start();
+		end();
+		return 0;
 	}
 }

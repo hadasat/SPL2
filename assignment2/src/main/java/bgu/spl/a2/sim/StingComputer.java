@@ -11,7 +11,9 @@ public class StingComputer {
     String SigFail;
 
     public Computer getComputer(){
-
-        return null;
+        Computer com = new Computer(Type);
+        com.setFailSig(Long.parseLong(SigFail));
+        com.setSuccessSig(Long.parseLong(SigSuccess));
+        return com;
     }
 }

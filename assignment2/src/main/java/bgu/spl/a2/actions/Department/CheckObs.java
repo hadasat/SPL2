@@ -16,11 +16,13 @@ public class CheckObs extends Action {//Check administrative obligations
     List<String> studentCourses;
     Warehouse warehouse;
     String computerType;
+    List<String> students;
 
-    public  CheckObs(List<String> studentCourses, Warehouse ware,String computerType){
+    public  CheckObs(List<String> studentCourses, Warehouse ware, String computerType, List<String> students){
         this.studentCourses = studentCourses;
         warehouse = ware;
         this.computerType = computerType;
+        this.students = students;
         promise = new Promise();
     }
 

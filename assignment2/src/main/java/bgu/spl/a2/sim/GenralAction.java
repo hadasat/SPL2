@@ -18,15 +18,8 @@ public class GenralAction {
     List<String> Conditions;
     String Space;
     String Number;
-    String Preferences;
+    List<String> Preferences;
 
 
-    public Action read(){
-        switch (Action){
-            case("Open Course"):
-                return new NewCourse<>(Course, Space, Prerequisites);
-            case("")
-        }
-    }
 
 }

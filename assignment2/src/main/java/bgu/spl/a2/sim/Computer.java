@@ -31,6 +31,14 @@ public class Computer {
 		return successSig;
 	}
 
+	public void setFailSig(long failSig) {
+		this.failSig = failSig;
+	}
+
+	public void setSuccessSig(long successSig) {
+		this.successSig = successSig;
+	}
+
 	public String getComputerType() {
 		return computerType;
 	}
