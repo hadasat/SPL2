@@ -17,9 +17,10 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 import com.google.gson.Gson;
 
-import java.io.FileReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
@@ -38,8 +39,9 @@ public class Simulator {
     public static void start(){
 
 			Gson gson = new Gson();
-		try {
-			UniversitySystem uniSystem = gson.fromJson(new FileReader("C:\\hadas\\semester_3\\newSPL\\SPL2\\assignment2\\src\\main\\java\\bgu\\spl\\a2\\GsonFiles\\gsonFile.txt"), UniversitySystem.class);
+		try (FileReader r = new FileReader("C:\\Users\\Itay\\Desktop\\school\\spl\\Spl2\\new\\SPL2\\assignment2\\src\\main\\java\\bgu\\spl\\a2\\sim\\gsonFile.txt")){
+			System.out.println("f");
+		    UniversitySystem uniSystem = gson.fromJson(r, UniversitySystem.class);
 			List<GenralAction> p1 = uniSystem.phase1, p2 = uniSystem.phase2, p3 = uniSystem.phase3;
 			List<StingComputer> computers = uniSystem.Computers;
             ConcurrentLinkedQueue<Computer> q = new ConcurrentLinkedQueue();
@@ -51,12 +53,13 @@ public class Simulator {
             Warehouse warehouse = Warehouse.getInstance();
 			warehouse.setMutex(q);
 			String thread = uniSystem.threads;
-			ActorThreadPool pool = new ActorThreadPool(Integer.getInteger(thread));
+			ActorThreadPool pool = new ActorThreadPool(Integer.parseInt(thread));
 			pool.start();
             //create the actions
             CountDownLatch count = new CountDownLatch(p1.size());
 			for(GenralAction action : p1){
 			    Action cur = null;
+
                 switch (action.Action) {
 
                     case ("Open Course"):
@@ -105,7 +108,9 @@ public class Simulator {
                 }
             }
 		}
-		catch (Exception e){}
+		catch (Exception e){
+		    System.out.println("not goog at all");
+        }
 
     }
 
@@ -236,12 +241,43 @@ public class Simulator {
 	* returns list of private states
 	*/
 	public static HashMap<String,PrivateState> end(){
-		return (HashMap<String, PrivateState>) actorThreadPool.getData();
+        HashMap<String,PrivateState> end = new HashMap<>();
+		ConcurrentHashMap<String, PrivateState> privates = actorThreadPool.getData();
+		end.putAll(privates);
+		return end;
+
 	}
+
+	public void staam(){System.out.println(getClass().toString());}
 	
-	public static int main(String [] args){
-		start();
-		end();
-		return 0;
+	public static void main(String[] args){
+        start();
+
+/*
+			start();
+		//end();
+		//return 0;
+        try{
+            writeOut();
+        }
+        catch (IOException e){
+            System.out.println("not good");
+        }
+*/
 	}
+
+	private static void writeOut() throws IOException{
+	    Gson gson = new Gson();
+        HashMap<String, PrivateState> SimulationResoult;
+        SimulationResoult = Simulator.end();
+        gson.toJson(SimulationResoult, new FileWriter("result.ser"));
+        String jsonInString = gson.toJson(SimulationResoult);
+        System.out.println(jsonInString.toString());
+
+        /*
+        FileOutputStream fout = new FileOutputStream("result.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fout);
+        oos.(SimulationResoult);
+        */
+    }
 }

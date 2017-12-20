@@ -11,7 +11,9 @@ public class Unregister extends Action {
     String student;
 
     public Unregister(String student){
+
         this.student = student;
+        promise = new Promise();
     }
 
     @Override

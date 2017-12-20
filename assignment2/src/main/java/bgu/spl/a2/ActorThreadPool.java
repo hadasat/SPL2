@@ -25,8 +25,8 @@ public class ActorThreadPool {
 	private AtomicBoolean entity;
 	private boolean shutDown;
 
-	public Map<String,ConcurrentLinkedQueue<bgu.spl.a2.Action>> getActor(){return actors;}
-	public Map<String,PrivateState> getData(){return data;}
+	public ConcurrentHashMap<String,ConcurrentLinkedQueue<Action>> getActor(){return actors;}
+	public ConcurrentHashMap<String,PrivateState> getData(){return data;}
 	public Thread[] getThreads(){return threads;}
 
 
@@ -101,7 +101,6 @@ public class ActorThreadPool {
 	 */
 	synchronized public void shutdown() throws InterruptedException {
 		shutDown = true;
-		version.inc();
 		for (int i = 0; i < threads.length; i ++){
 			threads[i].join();
 		}

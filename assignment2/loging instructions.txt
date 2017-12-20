@@ -1,0 +1,10 @@
+DepartmentPrivateState d = (DepartmentPrivateState)this.actorState;
+d.addRecord("Open Course");
+d.addRecord("Add Student");
+CoursePrivateState courseState = (CoursePrivateState)this.actorState;
+courseState.addRecord( "Add Spaces");
+courseState.addRecord("Close Course");
+courseState.addRecord("Participate In Course");
+d.addRecord("Administrative Check");
+courseState.addRecord("Unregister");
+d.addRecord("Register With Preferences");

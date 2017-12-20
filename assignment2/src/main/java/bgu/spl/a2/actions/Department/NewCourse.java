@@ -15,7 +15,7 @@ public class NewCourse<Boolean> extends Action {
     List<String> prerequisites;
 
     public NewCourse(String CourseName, Integer avPlaces, List<String> preq){
-        this.courseName = courseName;
+        this.courseName = CourseName;
         availbleSpaces= avPlaces;
         prerequisites = preq;
         promise = new Promise<Boolean>();
