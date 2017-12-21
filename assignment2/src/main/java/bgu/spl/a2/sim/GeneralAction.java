@@ -4,7 +4,7 @@ import bgu.spl.a2.actions.Department.NewCourse;
 
 import java.util.List;
 
-public class GenralAction {
+public class GeneralAction {
 
 
     String Action;

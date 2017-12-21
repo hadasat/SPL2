@@ -7,13 +7,13 @@ import java.util.List;
 public class UniversitySystem {
 
     String threads;
-    List<StingComputer> Computers;
+    List<StringComputer> Computers;
     @SerializedName("Phase 1")
-    List<GenralAction> phase1;
+    List<GeneralAction> phase1;
     @SerializedName("Phase 2")
-    List<GenralAction> phase2;
+    List<GeneralAction> phase2;
     @SerializedName("Phase 3")
-    List<GenralAction> phase3;
+    List<GeneralAction> phase3;
 
 
 
