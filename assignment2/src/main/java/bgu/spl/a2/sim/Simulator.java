@@ -68,6 +68,7 @@ public class Simulator {
     }
 
     private static void commitPhases(ActorThreadPool pool, Warehouse warehouse , List<List <GeneralAction>> phases, int index){
+        System.out.println("phase: " + index);
         List<GeneralAction> phase = phases.get(index);
         List<GeneralAction> nextPhase;
         //check that the next phase is exists
@@ -125,6 +126,20 @@ public class Simulator {
                     if(count.getCount() == 0) {
                         if (nextPhase != null)
                             commitPhases(pool, warehouse, phases,index+1);
+                        else {
+                            try {
+                                try {
+                                    pool.shutdown();
+                                }
+                                catch (InterruptedException in){}
+                                System.out.println("The pelet is:" +"\n" +end().toString());
+
+                                writeOut();
+                            }
+                            catch (IOException io){
+                                throw new RuntimeException("mashu baJson");
+                            }
+                        }
                     }
                 });
             }
