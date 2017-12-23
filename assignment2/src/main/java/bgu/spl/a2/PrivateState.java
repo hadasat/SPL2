@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,10 @@ public abstract class PrivateState {
 
 	public List<String> getLogger(){
 		return history;
+	}
+
+	public PrivateState(){
+		history = new ArrayList<>();
 	}
 	
 	/**
