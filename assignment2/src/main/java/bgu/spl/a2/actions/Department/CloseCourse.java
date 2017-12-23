@@ -28,6 +28,7 @@ public class CloseCourse extends Action {
         Promise prom = sendMessage(remove, course, new CoursePrivateState());
         then(subActions, ()-> {
             if(prom.get().equals(true) && dep.removeCourse(course)){
+                addRecord();
                 promise.resolve(true);
                 return;
             }
