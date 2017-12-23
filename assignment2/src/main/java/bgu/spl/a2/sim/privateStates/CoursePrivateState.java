@@ -24,10 +24,12 @@ public class CoursePrivateState extends PrivateState{
 	 * this may cause automatic tests to fail..
 	 */
 	public CoursePrivateState() {
+		super();
 		availableSpots = new Integer(0);
 		registered = new Integer(0);
 		regStudents = new ArrayList<String>();
 		prequisites = new ArrayList<String>();
+
 	}
 
 	public Integer getAvailableSpots() {

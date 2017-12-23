@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +16,10 @@ public abstract class PrivateState {
 	public List<String> getLogger(){
 		return history;
 	}
+
+	public PrivateState(){
+		history = new ArrayList<>();
+	}
 	
 	/**
 	 * add an action to the records
@@ -22,8 +27,7 @@ public abstract class PrivateState {
 	 * @param actionName
 	 */
 	public void addRecord(String actionName){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		history.add(actionName);
 	}
 	
 	
