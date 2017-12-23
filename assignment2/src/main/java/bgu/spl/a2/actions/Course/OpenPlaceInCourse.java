@@ -15,6 +15,13 @@ public class OpenPlaceInCourse extends Action {
     protected void start() {
         CoursePrivateState priv = (CoursePrivateState)actorPS;
         priv.setAvailableSpots(priv.getAvailableSpots()+places.intValue());
+        addRecord();
         complete(true);
+    }
+
+    private void addRecord(){
+        actorPS.addRecord("\"Action\": \"Add Spaces\",\n" +
+                "\"Course\": \"SPL\",\n" +
+                "\"Number\": \"100\"");
     }
 }

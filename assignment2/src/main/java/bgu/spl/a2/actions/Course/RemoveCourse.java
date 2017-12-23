@@ -19,7 +19,14 @@ public class RemoveCourse extends Action {
         numSubAction = subActions.size();
         then(subActions, ()-> {
             priv.setAvailableSpots(-1);
+            addRecord();
             complete(true);
         });
+    }
+
+    private void addRecord(){
+        actorPS.addRecord("\"Action\": \"Close Course\",\n" +
+                "\"Department\": \"CS\",\n" +
+                "\"Course\": \"Data Bases\"");
     }
 }

@@ -17,8 +17,8 @@ public class PartInCourse extends Action {
     }
     @Override
     protected void start() {
-        CoursePrivateState c = (CoursePrivateState)actorPS;
-        if(c.getAvailableSpots().intValue() <= 0){
+        CoursePrivateState c = (CoursePrivateState) actorPS;
+        if (c.getAvailableSpots().intValue() <= 0) {
             promise.resolve(false);
             return;
         }
@@ -26,27 +26,22 @@ public class PartInCourse extends Action {
         subActions.add(sub1);
         numSubAction = subActions.size();
         Promise prom = sendMessage(sub1, student, new StudentPrivateState());
-        then(subActions, ()-> {
-            if((prom.get()).equals(false))
+        then(subActions, () -> {
+            if ((prom.get()).equals(false))
                 complete(false);
             else {
                 c.addRegister(student);
+                addRecord();
                 complete(actorID);
             }
         });
+    }
 
 
-        /*
-        Action<Boolean> sub1 = new AddingCourseToStudent(actorID, actorPS);
-        subActions.add(sub1);
-        numSubAction = subActions.size();
-        Promise prom = sendMessage(sub1,course, new CoursePrivateState());
-        then(subActions, ()-> {
-            if((Boolean)prom.get()){
-                CoursePrivateState st = (CoursePrivateState) actorPS;
-                st.addGrade(course, grade);
-            }
-            complete(prom.get());
-        });*/
+    private void addRecord(){
+        actorPS.addRecord("\"Action\": \"Participate In Course\",\n" +
+                "\"Student\": \"" + actorID + "\",\n" +
+                "\"Course\": \"SPL\",\n" +
+                "\"Grade\": [\"98\"]");
     }
 }
