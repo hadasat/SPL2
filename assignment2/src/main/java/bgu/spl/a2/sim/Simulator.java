@@ -62,7 +62,7 @@ public class Simulator {
             phases.add(p3);
             commitPhases(pool,warehouse,phases,0);
         }
-		catch (Exception e){
+		catch (IOException e){
 		    System.out.println("not goog at all");
         }
     }
