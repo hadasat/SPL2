@@ -33,4 +33,10 @@ public class CloseCourse extends Action {
             }
             promise.resolve(false);});
     }
+
+    private void addRecord(){
+        actorPS.addRecord("\"Action\": \"Close Course\",\n" +
+                "\"Department\": \"" + actorID + "\",\n" +
+                "\"Course\": \"" + course + "\"");
+    }
 }

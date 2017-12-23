@@ -21,7 +21,7 @@ public class OpenPlaceInCourse extends Action {
 
     private void addRecord(){
         actorPS.addRecord("\"Action\": \"Add Spaces\",\n" +
-                "\"Course\": \"SPL\",\n" +
-                "\"Number\": \"100\"");
+                "\"Course\": \"" + actorID + "\",\n" +
+                "\"Number\": \"" + places.intValue() + "\"");
     }
 }

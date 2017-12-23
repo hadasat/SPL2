@@ -35,7 +35,7 @@ public class Unregister extends Action {
 
     private void addRecord(){
         actorPS.addRecord("\"Action\": \"Unregister\",\n" +
-                "\"Student\": \"123456789\",\n" +
-                "\"Course\": \"Data Bases\"\n");
+                "\"Student\": \"" + student + "\",\n" +
+                "\"Course\": \"" + actorID + "\"\n");
     }
 }

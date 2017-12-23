@@ -39,9 +39,11 @@ public class PartInCourse extends Action {
 
 
     private void addRecord(){
-        actorPS.addRecord("\"Action\": \"Participate In Course\",\n" +
-                "\"Student\": \"" + actorID + "\",\n" +
-                "\"Course\": \"SPL\",\n" +
-                "\"Grade\": [\"98\"]");
+        String toadd = "\"Action\": \"Participate In Course\",\n" +
+                "\"Student\": \"" + student + "\",\n" +
+                "\"Course\": \"" + actorID + "\",\n" +
+                "\"Grade\": [" + grade.intValue() + "\"]";
+
+        actorPS.addRecord(toadd);
     }
 }

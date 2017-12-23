@@ -34,11 +34,18 @@ public class NewCourse<Boolean> extends Action {
             ((DepartmentPrivateState)actorPS).addCourse(courseName);
              complete(p.get());});
 
-        /*
-        Action<Boolean> sub1 = new AddingCourseToDepartment(actorID);
-        subActions.add(sub1);
-        Promise prom = sendMessage(sub1,department, new DepartmentPrivateState());
-        then(subActions, ()-> {complete(prom.get());});
-        */
+    }
+
+    private void addRecord(){
+        String toadd = "\"Action\":\"Open Course\",\n" +
+                "\"Department\": \"" + actorPS + "\",\n" +
+                "\"Course\": \"" + courseName + "\",\n" +
+                "\"Space\": \"" + availbleSpaces.intValue() +"\",\n" + "\"Prerequisites\" : [";
+
+        for(String str : prerequisites){
+            toadd = toadd + "\"" + str + "\",";
+        }
+        toadd = toadd.substring(0, toadd.length()-1) + "\"]\n";
+        actorPS.addRecord(toadd);
     }
 }
