@@ -2,7 +2,7 @@ package bgu.spl.a2.sim;
 
 import com.google.gson.annotations.SerializedName;
 
-public class StingComputer {
+public class StringComputer {
 
     String Type;
     @SerializedName("Sig Success")
