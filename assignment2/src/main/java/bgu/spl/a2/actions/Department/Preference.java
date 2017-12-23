@@ -57,8 +57,35 @@ public class Preference<R> extends Action {
             Promise newpromise = sendMessage(pre, actorID, actorPS);
             then(subActions, ()->{
                 complete(newpromise.get());
+                if(!getResult().equals(false))
+                    addRecords();
             });
         });
     }
 
+    private void addRecords(){
+        String record = "\"Action\": \"Register With Preferences\",\n" +
+                "\"Student\": \"" + student + "\",\n" ;
+        //adding the preferences
+        for (int i = 0 ; i < pref.size() ; i++) {
+            String preference = pref.get(i);
+            if(i == 0)
+                record = record + "\"Preferences\" : [\"" + preference + "\",";
+            else if(i == pref.size() - 1 )
+                record = record + "\"" + preference + "\"]";
+            else
+                record = record + "\"" + preference + "\",";
+        }
+
+        //adding grades
+        for (int i = 0 ; i < grades.size() ; i++) {
+            String grade = grades.get(i);
+            if(i == 0)
+                record = record + "\"Grade\" : [\"" + grade + "\",";
+            else if(i == pref.size() - 1 )
+                record = record + "\"" + grade + "\"]";
+            else
+                record = record + "\"" + grade + "\",";
+        }
+    }
 }

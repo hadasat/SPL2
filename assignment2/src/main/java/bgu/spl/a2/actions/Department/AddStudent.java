@@ -23,7 +23,16 @@ public class AddStudent<Boolean> extends Action {
         Promise prom = sendMessage(sub1,studentName, new StudentPrivateState());
         then(subActions, ()-> {
             ((DepartmentPrivateState)actorPS).addStudent(studentName);
-            complete(prom.get());});
+            complete(prom.get());
+            if(!getResult().equals(false))
+                addRecored();
+        });
 
+    }
+
+    private void addRecored(){
+        actorPS.addRecord("\"Action\": \"Add Student\",\n" +
+                "\"Department\": \" " + actorID + " \",\n" +
+                "\"Student\": \"" +studentName + "\"");
     }
 }
