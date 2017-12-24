@@ -102,7 +102,7 @@ public class ActorThreadPool {
 	synchronized public void shutdown() throws InterruptedException {
 		shutDown = true;
 		for (int i = 0; i < threads.length; i ++){
-			threads[i].join();
+			threads[i].interrupt();
 		}
 	}
 
@@ -118,14 +118,14 @@ public class ActorThreadPool {
 	}
 
 	public void execute() {
-		while(!shutDown) {
+		while(!Thread.currentThread().isInterrupted()) {
 			boolean wait = false;
 			for (Map.Entry<String, AtomicBoolean> entry : avilableActor.entrySet()) {
 				if (entry.getValue().compareAndSet(true, false)) {
 					ConcurrentLinkedQueue<Action> q = actors.get(entry.getKey());
 					PrivateState p = data.get(entry.getKey());
-					Action a = q.poll();
-					if(a != null) a.handle(this, entry.getKey(), p);
+					Action action = q.poll();
+					if(action != null) action.handle(this, entry.getKey(), p);
 					entry.getValue().compareAndSet(false, true);
 					version.inc();
 					wait = true;
@@ -135,6 +135,7 @@ public class ActorThreadPool {
 				try {
 					version.await(version.getVersion());
 				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 				}
 			}
 		}

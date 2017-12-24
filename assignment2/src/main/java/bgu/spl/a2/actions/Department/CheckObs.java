@@ -28,8 +28,10 @@ public class CheckObs extends Action {//Check administrative obligations
 
     @Override
     protected void start() {
+        numSubAction = 0;
         DepartmentPrivateState dep = (DepartmentPrivateState) actorPS;
-        SuspendingMutex mutex = warehouse.allocate(computerType);
+        SuspendingMutex mutex;
+        mutex = warehouse.allocate(computerType);
         if (mutex != null) {
             Promise prom = mutex.down();
             prom.subscribe(() -> {
@@ -39,12 +41,15 @@ public class CheckObs extends Action {//Check administrative obligations
                     if (p == null || !(p instanceof StudentPrivateState))
                         throw new RuntimeException("wtf");
                     StudentPrivateState studentps = (StudentPrivateState) p;
-                    Action sub = new ChangeSignature(comp.checkAndSign(studentCourses, studentps.getGrades()));
+                    long answer = comp.checkAndSign(studentCourses, studentps.getGrades());
+                    Action sub = new ChangeSignature(answer);
+                    sendMessage(sub, student, studentps);
                     subActions.add(sub);
                     numSubAction++;
                 }
                 mutex.up();
                 then(subActions, () -> {
+                    System.out.println("Check Obs happend");
                     complete(true);
                     addRecord();
                 });

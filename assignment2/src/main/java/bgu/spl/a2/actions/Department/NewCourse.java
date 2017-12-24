@@ -32,6 +32,9 @@ public class NewCourse<Boolean> extends Action {
         numSubAction = subActions.size();
         then(subActions , ()->{
             ((DepartmentPrivateState)actorPS).addCourse(courseName);
+            if(!p.get().equals(false)){
+                addRecord();
+            }
              complete(p.get());});
 
     }
