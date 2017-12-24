@@ -21,8 +21,8 @@
       <file leaf-file-name="Simulator.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl/a2/sim/Simulator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="0" />
+            <state relative-caret-position="266">
+              <caret line="206" column="0" lean-forward="true" selection-start-line="206" selection-start-column="0" selection-end-line="206" selection-end-column="0" />
               <folding>
                 <element signature="e#6752#6753#0" expanded="true" />
                 <element signature="e#6783#6784#0" expanded="true" />
@@ -229,7 +229,7 @@
       </PATH>
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-9" />
     <option name="y" value="-9" />
     <option name="width" value="1938" />
@@ -714,7 +714,7 @@
       <workItem from="1514069888291" duration="2334000" />
       <workItem from="1514076437637" duration="338000" />
       <workItem from="1514133228236" duration="595000" />
-      <workItem from="1514135820875" duration="7963000" />
+      <workItem from="1514135820875" duration="8984000" />
     </task>
     <servers />
   </component>
@@ -751,7 +751,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="104289000" />
+    <option name="totallyTimeSpent" value="105310000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -763,7 +763,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1094,8 +1094,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl/a2/sim/Simulator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="0" />
+        <state relative-caret-position="266">
+          <caret line="206" column="0" lean-forward="true" selection-start-line="206" selection-start-column="0" selection-end-line="206" selection-end-column="0" />
           <folding>
             <element signature="e#6752#6753#0" expanded="true" />
             <element signature="e#6783#6784#0" expanded="true" />

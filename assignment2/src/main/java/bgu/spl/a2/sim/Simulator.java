@@ -197,18 +197,10 @@ public class Simulator {
         String jsonInString = gson.toJson(SimulationResoult);
         System.out.println(jsonInString.toString());
 */
-        FileOutputStream fout;
-        ObjectOutputStream oos;
-        try {
-            fout = new FileOutputStream("result.ser");
-        }catch(IOException io){throw new RuntimeException("fout");}
-        try{
-        oos = new ObjectOutputStream(fout);
-        }catch(IOException io){throw new RuntimeException("oos");}
-        try{
-        oos.writeObject(SimulationResoult);
-        }catch(IOException io){throw new RuntimeException("writobj");}
-
+        try(FileOutputStream fout = new FileOutputStream("result.ser"); ObjectOutputStream oos = new ObjectOutputStream(fout)) {
+            oos.writeObject(SimulationResoult);
+        }
+        catch (IOException ex){throw new RuntimeException("g");}
 
     }
 }
