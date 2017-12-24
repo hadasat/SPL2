@@ -31,15 +31,17 @@ import java.util.concurrent.CountDownLatch;
 public class Simulator {
 
 	
-	public static ActorThreadPool actorThreadPool = new ActorThreadPool(0);
+	static ActorThreadPool pool;
+	static Warehouse warehouse;
+	static List<List <GeneralAction>> phases;
 	
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
 
-    public static void start(){
-			Gson gson = new Gson();
-		try (FileReader r = new FileReader("gsonFile.txt")) {
+    public static void main(String[] args){
+        Gson gson = new Gson();
+        try (FileReader r = new FileReader("gsonFile.txt")) {
             UniversitySystem uniSystem = gson.fromJson(r, UniversitySystem.class);
             List<GeneralAction> p1 = uniSystem.phase1, p2 = uniSystem.phase2, p3 = uniSystem.phase3;
             List<StringComputer> computers = uniSystem.Computers;
@@ -49,25 +51,41 @@ public class Simulator {
                 Computer toenter = com.getComputer();
                 q.add(toenter);
             }
-            Warehouse warehouse = Warehouse.getInstance();
+            warehouse = Warehouse.getInstance();
             warehouse.setMutex(q);
             String thread = uniSystem.threads;
             ActorThreadPool pool = new ActorThreadPool(Integer.parseInt(thread));
-            pool.start();
+            attachActorThreadPool(pool);
             //create the actions
-            CountDownLatch count = new CountDownLatch(p1.size());
-            List<List <GeneralAction>> phases = new ArrayList<>();
+            phases = new ArrayList<>();
             phases.add(p1);
             phases.add(p2);
             phases.add(p3);
-            commitPhases(pool,warehouse,phases,0);
         }
-		catch (IOException e){
-		    System.out.println("not goog at all");
+        catch (IOException e){throw new RuntimeException("bad IO");}
+
+        start();
+
+/*
+			start();
+		//end();
+		//return 0;
+        try{
+            writeOut();
         }
+        catch (IOException e){
+            System.out.println("not good");
+        }
+*/
     }
 
-    private static void commitPhases(ActorThreadPool pool, Warehouse warehouse , List<List <GeneralAction>> phases, int index){
+    public static void start(){
+        pool.start();
+        commitPhases(pool,phases,0);
+
+    }
+
+    private static void commitPhases(ActorThreadPool pool, List<List <GeneralAction>> phases, int index){
         System.out.println("phase: " + index);
         List<GeneralAction> phase = phases.get(index);
         List<GeneralAction> nextPhase;
@@ -125,20 +143,22 @@ public class Simulator {
                     count.countDown();
                     if(count.getCount() == 0) {
                         if (nextPhase != null)
-                            commitPhases(pool, warehouse, phases,index+1);
+                            commitPhases(pool,phases,index+1);
                         else {
-                            try {
+                            System.out.println("OK...");
+                            //try {
                                 try {
                                     pool.shutdown();
+                                    System.out.println("The pelet is:" +"\n" +end().toString());
+
                                 }
                                 catch (InterruptedException in){}
-                                System.out.println("The pelet is:" +"\n" +end().toString());
 
                                 writeOut();
-                            }
+                            /*}
                             catch (IOException io){
                                 throw new RuntimeException("mashu baJson");
-                            }
+                            }*/
                         }
                     }
                 });
@@ -154,7 +174,7 @@ public class Simulator {
 	*/
 	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool)
 	{
-		actorThreadPool = myActorThreadPool;
+		pool = myActorThreadPool;
 	}
 	
 	/**
@@ -163,42 +183,32 @@ public class Simulator {
 	*/
 	public static HashMap<String,PrivateState> end(){
         HashMap<String,PrivateState> end = new HashMap<>();
-		ConcurrentHashMap<String, PrivateState> privates = actorThreadPool.getData();
+		ConcurrentHashMap<String, PrivateState> privates = pool.getData();
 		end.putAll(privates);
 		return end;
 
 	}
 
-	public void staam(){System.out.println(getClass().toString());}
-	
-	public static void main(String[] args){
-        start();
-
-/*
-			start();
-		//end();
-		//return 0;
-        try{
-            writeOut();
-        }
-        catch (IOException e){
-            System.out.println("not good");
-        }
-*/
-	}
-
-	private static void writeOut() throws IOException{
+	private static void writeOut() /*throws IOException*/{
 	    Gson gson = new Gson();
         HashMap<String, PrivateState> SimulationResoult;
-        SimulationResoult = Simulator.end();
-        gson.toJson(SimulationResoult, new FileWriter("result.ser"));
+        SimulationResoult = end();
+        /*gson.toJson(SimulationResoult, new FileWriter("result.ser"));
         String jsonInString = gson.toJson(SimulationResoult);
         System.out.println(jsonInString.toString());
+*/
+        FileOutputStream fout;
+        ObjectOutputStream oos;
+        try {
+            fout = new FileOutputStream("result.ser");
+        }catch(IOException io){throw new RuntimeException("fout");}
+        try{
+        oos = new ObjectOutputStream(fout);
+        }catch(IOException io){throw new RuntimeException("oos");}
+        try{
+        oos.writeObject(SimulationResoult);
+        }catch(IOException io){throw new RuntimeException("writobj");}
 
-        /*
-        FileOutputStream fout = new FileOutputStream("result.ser");
-        ObjectOutputStream oos = new ObjectOutputStream(fout);
-        oos.(SimulationResoult);
-        */
+
     }
 }

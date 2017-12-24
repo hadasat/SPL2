@@ -25,8 +25,9 @@ public class Unregister extends Action {
         numSubAction = subActions.size();
         Promise p = sendMessage(sub1,student,studentPS);
         then(subActions,()-> {
-            if(p.get().equals(true)) {
+            if(!p.get().equals(false)) {
                 addRecord();
+                System.out.println("Unregister happened");
                 complete(coursePS.removeFromCourse(student));
             }
             else

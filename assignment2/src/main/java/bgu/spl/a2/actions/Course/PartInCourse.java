@@ -19,7 +19,7 @@ public class PartInCourse extends Action {
     protected void start() {
         CoursePrivateState c = (CoursePrivateState) actorPS;
         if (c.getAvailableSpots().intValue() <= 0) {
-            promise.resolve(false);
+            complete(false);
             return;
         }
         AddingCourseToStudent sub1 = new AddingCourseToStudent(actorID, c, grade);
