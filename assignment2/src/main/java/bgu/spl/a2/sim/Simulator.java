@@ -157,10 +157,22 @@ public class Simulator {
 	public void staam(){System.out.println(getClass().toString());}
 	
 	public static void main(String[] args){
-        start();
+        //start();
 
-/*
-			start();
+        CoursePrivateState c = new CoursePrivateState();
+        c.setAvailableSpots(new Integer(5));
+        List<String> l = new ArrayList<>();
+        l.add("hadas");
+        c.setPrequisites(l);
+        Gson g = new Gson();
+        System.out.println(g.toJson(c));
+
+        HashMap<String,CoursePrivateState> m = new HashMap<>();
+        m.put("I",c);
+
+        System.out.println(g.toJson(m));
+        // /*
+		//	start();
 		//end();
 		//return 0;
         try{
@@ -169,7 +181,6 @@ public class Simulator {
         catch (IOException e){
             System.out.println("not good");
         }
-*/
 	}
 
 	private static void writeOut() throws IOException{
