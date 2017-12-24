@@ -41,7 +41,7 @@ public class Simulator {
 
     public static void main(String[] args){
         Gson gson = new Gson();
-        try (FileReader r = new FileReader("gsonFile.txt")) {
+        try (FileReader r = new FileReader(args[0])) {
             UniversitySystem uniSystem = gson.fromJson(r, UniversitySystem.class);
             List<GeneralAction> p1 = uniSystem.phase1, p2 = uniSystem.phase2, p3 = uniSystem.phase3;
             List<StringComputer> computers = uniSystem.Computers;
@@ -185,7 +185,6 @@ public class Simulator {
 		ConcurrentHashMap<String, PrivateState> privates = pool.getData();
 		end.putAll(privates);
 		return end;
-
 	}
 
 	private static void writeOut() /*throws IOException*/{
