@@ -150,7 +150,6 @@ public class Simulator {
                                 try {
                                     pool.shutdown();
                                     System.out.println("The pelet is:" +"\n" +end().toString());
-
                                 }
                                 catch (InterruptedException in){}
 
@@ -190,17 +189,16 @@ public class Simulator {
 	}
 
 	private static void writeOut() /*throws IOException*/{
-	    Gson gson = new Gson();
         HashMap<String, PrivateState> SimulationResoult;
         SimulationResoult = end();
-        /*gson.toJson(SimulationResoult, new FileWriter("result.ser"));
-        String jsonInString = gson.toJson(SimulationResoult);
-        System.out.println(jsonInString.toString());
-*/
+        for(int i = 0; i < 8 ; i++){
+            if(pool.getThreads()[i].isAlive())
+                System.out.println(pool.getThreads()[i].getState() + "wow" + i);
+        }
         try(FileOutputStream fout = new FileOutputStream("result.ser"); ObjectOutputStream oos = new ObjectOutputStream(fout)) {
             oos.writeObject(SimulationResoult);
         }
-        catch (IOException ex){throw new RuntimeException("g");}
+        catch (IOException ex){throw new RuntimeException(ex.getMessage());}
 
     }
 }

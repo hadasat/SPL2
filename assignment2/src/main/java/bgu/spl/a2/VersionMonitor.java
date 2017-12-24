@@ -47,11 +47,19 @@ public class VersionMonitor {
 
     public void await(int version) throws InterruptedException {
         synchronized (sync) {
-            if(await < pool.getThreads().length-1) {
+            if(await < pool.getThreads().length) {
                 while (this.version == (version))
                 {
                     await++;
                     sync.wait();
+                }
+            }
+            else {
+                try {
+                    Thread.currentThread().wait(10);
+                }
+                catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
                 }
             }
         }

@@ -1,13 +1,10 @@
 package bgu.spl.a2;
 
-import bgu.spl.a2.PrivateState;
 import bgu.spl.a2.sim.Simulator;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.Timeout;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,8 +17,8 @@ import java.util.HashMap;
  * @author nadav.
  */
 public class SimulatorDeserializable  {
-    @Rule
-    public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
+    //@Rule
+    //public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
     @Test
     public void main() {
         //todo change the name of the file in the next line for the name you have

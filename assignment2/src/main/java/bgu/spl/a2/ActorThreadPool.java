@@ -104,6 +104,8 @@ public class ActorThreadPool {
 		for (int i = 0; i < threads.length; i ++){
 			threads[i].interrupt();
 		}
+		notifyAll();
+
 	}
 
 	/**
@@ -131,6 +133,7 @@ public class ActorThreadPool {
 					wait = true;
 				}
 			}
+
 			if (!wait) {
 				try {
 					version.await(version.getVersion());
