@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * methods
  */
 public class ActorThreadPool {
+
 	private  VersionMonitor version;
 	private Runnable runnable;
 	private int size;
@@ -101,10 +102,11 @@ public class ActorThreadPool {
 	 */
 	synchronized public void shutdown() throws InterruptedException {
 		shutDown = true;
+		version.inc();
 		for (int i = 0; i < threads.length; i ++){
 			threads[i].interrupt();
 		}
-		notifyAll();
+
 
 	}
 
@@ -115,28 +117,35 @@ public class ActorThreadPool {
 		if (entity.compareAndSet(false, true)) {
 			for (int i = 0; i < threads.length; i++) {
 				threads[i].start();
+
 			}
 		}
 	}
 
 	public void execute() {
 		while(!Thread.currentThread().isInterrupted()) {
+			int ver = version.getVersion();
 			boolean wait = false;
 			for (Map.Entry<String, AtomicBoolean> entry : avilableActor.entrySet()) {
 				if (entry.getValue().compareAndSet(true, false)) {
 					ConcurrentLinkedQueue<Action> q = actors.get(entry.getKey());
 					PrivateState p = data.get(entry.getKey());
 					Action action = q.poll();
-					if(action != null) action.handle(this, entry.getKey(), p);
+					if(action != null) {
+						action.handle(this, entry.getKey(), p);
+						wait = true;
+					}
+					else{wait = !q.isEmpty();}
 					entry.getValue().compareAndSet(false, true);
 					version.inc();
-					wait = true;
+					///////////////
+					System.out.println(Thread.currentThread().getId() + ": "  + Thread.currentThread().getState());
 				}
 			}
 
 			if (!wait) {
 				try {
-					version.await(version.getVersion());
+					version.await(ver);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				}

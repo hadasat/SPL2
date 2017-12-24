@@ -41,7 +41,7 @@ public class Simulator {
 
     public static void main(String[] args){
         Gson gson = new Gson();
-        try (FileReader r = new FileReader(args[0])) {
+        try (FileReader r = new FileReader("gsonFile.txt")) {
             UniversitySystem uniSystem = gson.fromJson(r, UniversitySystem.class);
             List<GeneralAction> p1 = uniSystem.phase1, p2 = uniSystem.phase2, p3 = uniSystem.phase3;
             List<StringComputer> computers = uniSystem.Computers;
@@ -137,23 +137,20 @@ public class Simulator {
             }
             //add callback to every action
             else{
-                System.out.println(Thread.currentThread().toString());
-                System.out.println(cur);
                 cur.subscribe(()->{
                     count.countDown();
                     if(count.getCount() == 0) {
                         if (nextPhase != null)
                             commitPhases(pool,phases,index+1);
                         else {
-                            System.out.println("OK...");
                             //try {
                                 try {
                                     pool.shutdown();
-                                    System.out.println("The pelet is:" +"\n" +end().toString());
                                 }
                                 catch (InterruptedException in){}
-
-                                writeOut();
+                                try {
+                                    writeOut();
+                                }catch (IOException io){System.out.println("mami at yafa sheli, metuka sheli");}
                             /*}
                             catch (IOException io){
                                 throw new RuntimeException("mashu baJson");
@@ -187,17 +184,20 @@ public class Simulator {
 		return end;
 	}
 
-	private static void writeOut() /*throws IOException*/{
+	private static void writeOut() throws IOException{
         HashMap<String, PrivateState> SimulationResoult;
         SimulationResoult = end();
         for(int i = 0; i < 8 ; i++){
             if(pool.getThreads()[i].isAlive())
-                System.out.println(pool.getThreads()[i].getState() + "wow" + i);
+                System.out.println(pool.getThreads()[i].getState() + " wow " + pool.getThreads()[i].getId());
         }
         try(FileOutputStream fout = new FileOutputStream("result.ser"); ObjectOutputStream oos = new ObjectOutputStream(fout)) {
             oos.writeObject(SimulationResoult);
         }
-        catch (IOException ex){throw new RuntimeException(ex.getMessage());}
-
+        catch (){System.out.println(Thread.currentThread().getId() + " ani nogea began edeeeeeeeeeeeeeen");}
+        for(int i = 0; i < 8; i++){
+            System.out.println(pool.getThreads()[i].getState() + " "+ i);
+        }
+        System.out.println(Thread.currentThread().getId());
     }
 }
