@@ -17,6 +17,6 @@ public class ChangeSignature extends Action {
     protected void start() {
         StudentPrivateState studentps = (StudentPrivateState)actorPS;
         studentps.setSignature(signature);
-        complete(true);
+        promise.resolve(true);
     }
 }

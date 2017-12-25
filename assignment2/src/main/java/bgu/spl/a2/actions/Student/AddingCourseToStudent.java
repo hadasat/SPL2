@@ -1,7 +1,6 @@
 package bgu.spl.a2.actions.Student;
 
 import bgu.spl.a2.Action;
-import bgu.spl.a2.PrivateState;
 import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
@@ -9,7 +8,7 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 import java.util.List;
 import java.util.Map;
 
-public class AddingCourseToStudent<Boolean> extends Action {
+public class AddingCourseToStudent extends Action {
     private String course;
     private CoursePrivateState priv;
     private Integer grade;
@@ -17,7 +16,7 @@ public class AddingCourseToStudent<Boolean> extends Action {
         this.course = course;
         this.priv = priv;
         this.grade = grade;
-        promise = new Promise<Boolean>();
+        promise = new Promise();
     }
     @Override
     protected void start() {
@@ -32,7 +31,7 @@ public class AddingCourseToStudent<Boolean> extends Action {
             }
         }
         s.addGrade(course, grade);
-        promise.resolve(true);
+        complete(true);
         return;
     }
 }

@@ -9,7 +9,7 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 public class RemoveCourse extends Action {
 
     public RemoveCourse(){
-        name = "Remove course";
+        name = "Remove Course";
     }
 
     @Override

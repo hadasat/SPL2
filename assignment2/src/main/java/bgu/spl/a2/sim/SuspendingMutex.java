@@ -52,12 +52,19 @@ public class SuspendingMutex {
 	 * Computer return procedure
 	 * releases a computer which becomes available in the warehouse upon completion
 	 */
+
 	public void up(){
 		if(!flag.compareAndSet(false, true))
 			throw new RuntimeException("already released kapara");
 		Promise<Computer> current = promises.poll();
-		if(current != null)
-			current.resolve(computer);
+		if(current != null) {
+			if(!flag.compareAndSet(true, false)){
+				promises.add(current);
+			}
+			else {
+				current.resolve(computer);
+			}
+		}
 	}
 
 	public Computer getComputer() {

@@ -100,6 +100,8 @@ public class ActorThreadPool {
 	 * @throws InterruptedException
 	 *             if the thread that shut down the threads is interrupted
 	 */
+
+	//this method throws interrupted exception so only one can do it at once
 	synchronized public void shutdown() throws InterruptedException {
 		shutDown = true;
 		version.inc();
@@ -136,7 +138,8 @@ public class ActorThreadPool {
 						wait = true;
 					}
 					else{wait = !q.isEmpty();}
-					entry.getValue().compareAndSet(false, true);
+					if(!entry.getValue().compareAndSet(false, true))
+						throw new RuntimeException("lo tov ba pool");
 					version.inc();
 					///////////////
 					//System.out.println(Thread.currentThread().getId() + ": "  + Thread.currentThread().getState());

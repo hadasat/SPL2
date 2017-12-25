@@ -38,6 +38,7 @@ public class VersionMonitor {
     }
 
     public void inc() {
+        //this method use notify all
         synchronized (sync){
             version++;
             await = 0;
@@ -46,6 +47,7 @@ public class VersionMonitor {
     }
 
     public void await(int version) throws InterruptedException {
+        //this method uses wait and the result is interrupt
         synchronized (sync) {
             if(await <= pool.getThreads().length-1) {
                 while (this.version == (version))

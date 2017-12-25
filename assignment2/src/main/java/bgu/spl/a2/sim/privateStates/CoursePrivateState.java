@@ -53,7 +53,7 @@ public class CoursePrivateState extends PrivateState{
 	public void setPrequisites(List<String> preq){ prequisites = preq;}
 
 	public boolean addRegister(String student){
-		if(regStudents.add(student)) {
+		if(availableSpots > 0 && regStudents.add(student)) {
 			availableSpots--;
 			registered++;
 			return true;

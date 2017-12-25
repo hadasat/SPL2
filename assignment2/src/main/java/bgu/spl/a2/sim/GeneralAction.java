@@ -1,7 +1,5 @@
 package bgu.spl.a2.sim;
 
-import bgu.spl.a2.actions.Department.NewCourse;
-
 import java.util.List;
 
 public class GeneralAction {
@@ -19,7 +17,5 @@ public class GeneralAction {
     String Space;
     String Number;
     List<String> Preferences;
-
-
 
 }

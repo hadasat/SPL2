@@ -1,6 +1,4 @@
 package bgu.spl.a2;
-import com.google.gson.Gson;
-
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @param <R> the action result type
  */
+
 public abstract class Action<R> {
 
     protected callback finalCallBack;
@@ -81,9 +80,10 @@ public abstract class Action<R> {
         }
     }
 
+    //this action need to decrease the numbers of sub actions so only one thread can do it at once
     public synchronized void down(){
             numSubAction--;
-            if(numSubAction <= 0){
+            if(numSubAction == 0){
                 pool.submit(this, actorID, actorPS);
             }
     }

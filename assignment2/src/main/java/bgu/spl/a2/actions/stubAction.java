@@ -17,6 +17,6 @@ public class StubAction<R> extends Action {
 
     @Override
     protected void start() {
-        promise.resolve(result);
+        complete(result);
     }
 }

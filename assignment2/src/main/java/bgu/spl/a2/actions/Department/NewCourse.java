@@ -8,7 +8,7 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 import java.util.List;
 
-public class NewCourse<Boolean> extends Action {
+public class NewCourse extends Action {
 
     String courseName;
     Integer availbleSpaces;
@@ -19,7 +19,7 @@ public class NewCourse<Boolean> extends Action {
         this.courseName = CourseName;
         availbleSpaces= avPlaces;
         prerequisites = preq;
-        promise = new Promise<Boolean>();
+        promise = new Promise();
     }
 
     @Override
@@ -34,20 +34,6 @@ public class NewCourse<Boolean> extends Action {
         then(subActions , ()->{
             ((DepartmentPrivateState)actorPS).addCourse(courseName);
              complete(p.get());});
-
     }
-/**
-    private void addRecord(){
-        String toadd = "\"Action\":\"Open Course\",\n" +
-                "\"Department\": \"" + actorPS + "\",\n" +
-                "\"Course\": \"" + courseName + "\",\n" +
-                "\"Space\": \"" + availbleSpaces.intValue() +"\",\n" + "\"Prerequisites\" : [";
 
-        for(String str : prerequisites){
-            toadd = toadd + "\"" + str + "\",";
-        }
-        toadd = toadd.substring(0, toadd.length()-1) + "\"]\n";
-        actorPS.addRecord(toadd);
-    }
- */
 }

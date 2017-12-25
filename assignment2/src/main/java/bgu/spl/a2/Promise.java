@@ -48,6 +48,7 @@ public class Promise<T>{
 	 *         {@link #resolve(java.lang.Object)} has been called on this object
 	 *         before.
 	 */
+
 	public boolean isResolved() {
 		if(resulte != null)
 			return true;
@@ -68,6 +69,8 @@ public class Promise<T>{
 	 * @param value
 	 *            - the value to resolve this promise object with
 	 */
+
+
 	synchronized public void resolve(T value){
 		if (isResolved())
 			throw new IllegalStateException("the promise has been resolved");
@@ -91,21 +94,14 @@ public class Promise<T>{
 	 * @param callback
 	 *            the callback to be called when the promise object is resolved
 	 */
-	public void subscribe(callback callback) {
+
+	//when adding two callback at the same time to queue one of the callback can be lost
+	synchronized public void subscribe(callback callback) {
 		if(!isResolved())
 			callbacksList.add(callback);
 		else
 			callback.call();
 	}
 
-	/*package*/ final void reresolve(T value){
-		if(!isResolved())
-			throw new IllegalStateException("the promise has been resolved");
-		resulte = value;
-		for(callback call: callbacksList){
-			call.call();
-		}
-		callbacksList.clear();
 
-	}
 }

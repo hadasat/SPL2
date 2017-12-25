@@ -49,39 +49,12 @@ public class CheckObs extends Action {//Check administrative obligations
                     numSubAction++;
                 }
                 mutex.up();
-                then(subActions, () -> {
-                   // System.out.println("Check Obs happend");
+                then(subActions, () ->{
                     complete(true);
                 });
             });
         }
         else{throw new RuntimeException("computer key lo nimtza");}
     }
-/**
-    private void addRecord(){
-        String record = "\"Action\" : \"Administrative Check\",\n" +
-                "\"Department\": \"" + actorID + "\",\n" ;
-        //adding the students
-        for (int i = 0 ; i < students.size() ; i++) {
-            String student = students.get(i);
-            if(i == 0)
-                record = record + "\"Students\": [\"" + student + "\"," ;
-            else if(i == students.size() - 1)
-                record = record + "\"" + student + "\"],\n";
-            else
-                record = record + "\"" + student + "\",";
-        }
-        record = record + "\"Computer\": \"" + computerType + "\",\n" ;
-        //adding the conditions
-        for (int i = 0 ; i < studentCourses.size() ; i++) {
-            String course = studentCourses.get(i);
-            if(i == 0)
-                record = record + "\"Conditions\" : [\"" + course + "\",";
-            else if(i == students.size() - 1)
-                record = record + "\"" + course + "\"]";
-            else
-                record = record + "\"" + course + "\",";
-        }
-        actorPS.addRecord(record);
-    } */
+
 }

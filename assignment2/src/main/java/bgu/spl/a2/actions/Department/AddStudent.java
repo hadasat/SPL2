@@ -6,14 +6,14 @@ import bgu.spl.a2.actions.StubAction;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
-public class AddStudent<Boolean> extends Action {
+public class AddStudent extends Action {
 
     private String studentName;
 
     public AddStudent(String studentName){
         name = "Add student";
         this.studentName = studentName;
-        promise = new Promise<Boolean>();
+        promise = new Promise();
     }
 
     @Override
@@ -23,8 +23,12 @@ public class AddStudent<Boolean> extends Action {
         numSubAction = subActions.size();
         Promise prom = sendMessage(sub1,studentName, new StudentPrivateState());
         then(subActions, ()-> {
-            ((DepartmentPrivateState)actorPS).addStudent(studentName);
-            complete(prom.get());
+            if(((DepartmentPrivateState)actorPS).addStudent(studentName))
+            {
+                complete(prom.get());
+                return;
+            }
+            complete(false);
         });
 
     }
