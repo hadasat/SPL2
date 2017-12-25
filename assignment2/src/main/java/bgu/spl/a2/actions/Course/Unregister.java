@@ -11,7 +11,7 @@ public class Unregister extends Action {
     String student;
 
     public Unregister(String student){
-
+        name = "Unregister";
         this.student = student;
         promise = new Promise();
     }
@@ -26,16 +26,17 @@ public class Unregister extends Action {
         Promise p = sendMessage(sub1,student,studentPS);
         then(subActions,()-> {
             if(!p.get().equals(false)) {
-                addRecord();
                 complete(coursePS.removeFromCourse(student));
             }
             else
                 complete (false);});
     }
 
+    /*
     private void addRecord(){
         actorPS.addRecord("\"Action\": \"Unregister\",\n" +
                 "\"Student\": \"" + student + "\",\n" +
                 "\"Course\": \"" + actorID + "\"\n");
     }
+    */
 }

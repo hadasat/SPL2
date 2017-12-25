@@ -8,6 +8,10 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
  */
 public class RemoveCourse extends Action {
 
+    public RemoveCourse(){
+        name = "Remove course";
+    }
+
     @Override
     protected void start() {
         CoursePrivateState priv = (CoursePrivateState)actorPS;

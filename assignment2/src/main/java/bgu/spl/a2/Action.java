@@ -1,4 +1,6 @@
 package bgu.spl.a2;
+import com.google.gson.Gson;
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +26,7 @@ public abstract class Action<R> {
     protected PrivateState actorPS;
     protected AtomicBoolean hasStarted = new AtomicBoolean(false);
     protected ActorThreadPool pool;
+    protected String name;
 	/**.
      * start handling the action - note that this method is protected, a thread
      * cannot call it directly.
@@ -94,6 +97,7 @@ public abstract class Action<R> {
 
     protected final void complete(R result) {
        	promise.resolve(result);
+       	addRecord();
     }
     
     /**
@@ -127,4 +131,9 @@ public abstract class Action<R> {
     public void subscribe(callback c){
 	    promise.subscribe(c);
     }
+
+    protected void addRecord(){
+        actorPS.addRecord(name);
+    }
+
 }

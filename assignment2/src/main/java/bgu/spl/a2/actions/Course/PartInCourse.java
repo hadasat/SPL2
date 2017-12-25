@@ -11,6 +11,7 @@ public class PartInCourse extends Action {
     private String student;
 
     public  PartInCourse(Integer grade, String student){
+        name = "Participate in course";
         this.grade = grade;
         this.student = student;
         promise = new Promise();
@@ -31,13 +32,12 @@ public class PartInCourse extends Action {
                 complete(false);
             else {
                 c.addRegister(student);
-                addRecord();
                 complete(actorID);
             }
         });
     }
 
-
+/*
     private void addRecord(){
         String toadd = "\"Action\": \"Participate In Course\",\n" +
                 "\"Student\": \"" + student + "\",\n" +
@@ -46,4 +46,5 @@ public class PartInCourse extends Action {
 
         actorPS.addRecord(toadd);
     }
+    */
 }

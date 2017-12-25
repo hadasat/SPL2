@@ -11,6 +11,7 @@ public class CloseCourse extends Action {
     private String course;
 
     public  CloseCourse(String course){
+        name = "Close Course";
         this.course = course;
         promise = new Promise();
     }
@@ -28,16 +29,16 @@ public class CloseCourse extends Action {
         Promise prom = sendMessage(remove, course, new CoursePrivateState());
         then(subActions, ()-> {
             if(prom.get().equals(true) && dep.removeCourse(course)){
-                addRecord();
                 promise.resolve(true);
                 return;
             }
             promise.resolve(false);});
     }
-
+/*
     private void addRecord(){
         actorPS.addRecord("\"Action\": \"Close Course\",\n" +
                 "\"Department\": \"" + actorID + "\",\n" +
                 "\"Course\": \"" + course + "\"");
     }
+    */
 }

@@ -19,6 +19,7 @@ public class CheckObs extends Action {//Check administrative obligations
     List<String> students;
 
     public  CheckObs(List<String> studentCourses, Warehouse ware, String computerType, List<String> students){
+        name = "Administrative Check";
         this.studentCourses = studentCourses;
         warehouse = ware;
         this.computerType = computerType;
@@ -49,15 +50,14 @@ public class CheckObs extends Action {//Check administrative obligations
                 }
                 mutex.up();
                 then(subActions, () -> {
-                    System.out.println("Check Obs happend");
+                   // System.out.println("Check Obs happend");
                     complete(true);
-                    addRecord();
                 });
             });
         }
         else{throw new RuntimeException("computer key lo nimtza");}
     }
-
+/**
     private void addRecord(){
         String record = "\"Action\" : \"Administrative Check\",\n" +
                 "\"Department\": \"" + actorID + "\",\n" ;
@@ -83,5 +83,5 @@ public class CheckObs extends Action {//Check administrative obligations
                 record = record + "\"" + course + "\",";
         }
         actorPS.addRecord(record);
-    }
+    } */
 }

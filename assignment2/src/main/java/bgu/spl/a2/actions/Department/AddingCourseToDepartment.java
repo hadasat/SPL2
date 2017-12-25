@@ -8,6 +8,7 @@ public class AddingCourseToDepartment<Boolean> extends Action {
     private String course;
 
     public AddingCourseToDepartment(String name) {
+        name = "Adding course to department";
         course = name;
         promise = new Promise();
 

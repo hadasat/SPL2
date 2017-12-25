@@ -20,6 +20,7 @@ public class Preference<R> extends Action {
     List<String> grades;
 
     public Preference(String student, List<String> pref, List<String> grades){
+        name = "Register With Preferences";
         index = new Integer(0);
         this.student = student;
         this.pref = pref;

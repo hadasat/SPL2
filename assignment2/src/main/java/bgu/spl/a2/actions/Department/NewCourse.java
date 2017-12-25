@@ -15,6 +15,7 @@ public class NewCourse<Boolean> extends Action {
     List<String> prerequisites;
 
     public NewCourse(String CourseName, Integer avPlaces, List<String> preq){
+        name = "Open Course";
         this.courseName = CourseName;
         availbleSpaces= avPlaces;
         prerequisites = preq;
@@ -32,13 +33,10 @@ public class NewCourse<Boolean> extends Action {
         numSubAction = subActions.size();
         then(subActions , ()->{
             ((DepartmentPrivateState)actorPS).addCourse(courseName);
-            if(!p.get().equals(false)){
-                addRecord();
-            }
              complete(p.get());});
 
     }
-
+/**
     private void addRecord(){
         String toadd = "\"Action\":\"Open Course\",\n" +
                 "\"Department\": \"" + actorPS + "\",\n" +
@@ -51,4 +49,5 @@ public class NewCourse<Boolean> extends Action {
         toadd = toadd.substring(0, toadd.length()-1) + "\"]\n";
         actorPS.addRecord(toadd);
     }
+ */
 }

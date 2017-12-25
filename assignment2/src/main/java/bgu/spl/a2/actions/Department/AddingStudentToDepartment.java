@@ -8,6 +8,7 @@ public class AddingStudentToDepartment<Boolean> extends Action {
     private String student;
 
     public AddingStudentToDepartment(String student){
+        name ="Adding student to department";
         this.student = student;
         promise = new Promise<Boolean>();
     }

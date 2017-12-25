@@ -11,6 +11,7 @@ public class AddStudent<Boolean> extends Action {
     private String studentName;
 
     public AddStudent(String studentName){
+        name = "Add student";
         this.studentName = studentName;
         promise = new Promise<Boolean>();
     }
@@ -24,15 +25,8 @@ public class AddStudent<Boolean> extends Action {
         then(subActions, ()-> {
             ((DepartmentPrivateState)actorPS).addStudent(studentName);
             complete(prom.get());
-            if(!getResult().equals(false))
-                addRecored();
         });
 
     }
 
-    private void addRecored(){
-        actorPS.addRecord("\"Action\": \"Add Student\",\n" +
-                "\"Department\": \" " + actorID + " \",\n" +
-                "\"Student\": \"" +studentName + "\"");
-    }
 }
