@@ -81,13 +81,13 @@ public class Simulator {
                 pool.shutdown();
             } catch (InterruptedException in) {
             }
-            try {
+            //try {
                 System.out.println(end().toString());
                 writeOut();
-            } catch (IOException io) {
+            /*} catch (IOException io) {
                 System.out.println("mami at yafa sheli, metuka sheli");
             }
-            return;
+            return;*/
         } else {
             List<GeneralAction> phase = phases.get(index);
 //            nextPhase= phases.get(index+1);
@@ -166,21 +166,16 @@ public class Simulator {
 		return end;
 	}
 
-	private static void writeOut() throws IOException{
+	private static void writeOut(){
         HashMap<String, PrivateState> SimulationResoult;
         Gson gson = new Gson();
         SimulationResoult = end();
         System.out.println(gson.toJson(SimulationResoult));
-        FileOutputStream fout = new FileOutputStream("result.ser");
-        ObjectOutputStream oos = new ObjectOutputStream(fout);
-        String s =gson.toJson(SimulationResoult);
-        oos.writeObject(s);
-        try(  PrintWriter out = new PrintWriter( "filename.txt" )  ) {
-            out.println(s);
-        }
-        catch (IOException e){
-            System.out.println("whhwhhwhh");
-        }
+        try {
+            FileOutputStream fout = new FileOutputStream("result.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(SimulationResoult);
+        }catch (IOException io){System.out.println("ss");}
         /*
         for(int i = 0; i < 8 ; i++){
             if(pool.getThreads()[i].isAlive())
