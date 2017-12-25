@@ -65,18 +65,6 @@ public class Simulator {
         catch (IOException e){throw new RuntimeException("bad IO");}
 
         start();
-
-/*
-			start();
-		//end();
-		//return 0;
-        try{
-            writeOut();
-        }
-        catch (IOException e){
-            System.out.println("not good");
-        }
-*/
     }
 
     public static void start(){
@@ -85,82 +73,76 @@ public class Simulator {
 
     }
 
-    private static void commitPhases(ActorThreadPool pool, List<List <GeneralAction>> phases, int index){
+    private static void commitPhases(ActorThreadPool pool, List<List <GeneralAction>> phases, int index) {
         System.out.println("phase: " + index);
-        List<GeneralAction> phase = phases.get(index);
         List<GeneralAction> nextPhase;
         //check that the next phase is exists
-        if(index + 1 == phases.size())
-            nextPhase = null;
-        else
-            nextPhase= phases.get(index+1);
-        CountDownLatch count = new CountDownLatch(phase.size());
-        //run over all the general actions and translate them into Action
-        for(GeneralAction action : phase){
-            Action cur = null;
-            switch (action.Action) {
-                case ("Open Course"):
-                    cur = new NewCourse(action.Course, Integer.parseInt(action.Space), action.Prerequisites);
-                    pool.submit(cur, action.Department, new DepartmentPrivateState());
-                    break;
-                case ("Add Student"):
-                    cur = new AddStudent(action.Student);
-                    pool.submit(cur, action.Department, new DepartmentPrivateState());
-                    break;
-                case ("Participate In Course"):
-                    cur = new PartInCourse(Integer.parseInt(action.Grade.get(0)), action.Student);
-                    pool.submit(cur, action.Course, new CoursePrivateState());
-                    break;
-                case ("Add Spaces"):
-                    cur = new OpenPlaceInCourse(Integer.parseInt(action.Number));
-                    pool.submit(cur, action.Course, new CoursePrivateState());
-                    break;
-                case ("Register With Preferences"):
-                    cur = new Preference(action.Student, action.Preferences, action.Grade);
-                    pool.submit(cur, action.Student, new StudentPrivateState());
-                    break;
-                case ("Unregister"):
-                    cur = new Unregister(action.Student);
-                    pool.submit(cur, action.Course, new CoursePrivateState());
-                    break;
-                case ("Close Course"):
-                    cur = new CloseCourse(action.Course);
-                    pool.submit(cur, action.Department, new DepartmentPrivateState());
-                    break;
-                case ("Administrative Check"):
-                    cur = new CheckObs(action.Conditions, warehouse, action.Computer, action.Students);
-                    pool.submit(cur, action.Department, new DepartmentPrivateState());
-                    break;
+        if (index == phases.size()) {
+            try {
+                pool.shutdown();
+            } catch (InterruptedException in) {
             }
-            if(cur == null){
-                throw  new RuntimeException("??");
+            try {
+                writeOut();
+            } catch (IOException io) {
+                System.out.println("mami at yafa sheli, metuka sheli");
             }
-            //add callback to every action
-            else{
-                cur.subscribe(()->{
-                    count.countDown();
-                    if(count.getCount() == 0) {
-                        if (nextPhase != null)
-                            commitPhases(pool,phases,index+1);
-                        else {
-                            //try {
-                                try {
-                                    pool.shutdown();
-                                }
-                                catch (InterruptedException in){}
-                                try {
-                                    writeOut();
-                                }catch (IOException io){System.out.println("mami at yafa sheli, metuka sheli");}
-                            /*}
-                            catch (IOException io){
-                                throw new RuntimeException("mashu baJson");
-                            }*/
-                        }
-                    }
-                });
+            return;
+        } else {
+            List<GeneralAction> phase = phases.get(index);
+//            nextPhase= phases.get(index+1);
+            CountDownLatch count = new CountDownLatch(phase.size());
+            //run over all the general actions and translate them into Action
+            for (GeneralAction action : phase) {
+                Action cur = null;
+                switch (action.Action) {
+                    case ("Open Course"):
+                        cur = new NewCourse(action.Course, Integer.parseInt(action.Space), action.Prerequisites);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                    case ("Add Student"):
+                        cur = new AddStudent(action.Student);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                    case ("Participate In Course"):
+                        cur = new PartInCourse(Integer.parseInt(action.Grade.get(0)), action.Student);
+                        pool.submit(cur, action.Course, new CoursePrivateState());
+                        break;
+                    case ("Add Spaces"):
+                        cur = new OpenPlaceInCourse(Integer.parseInt(action.Number));
+                        pool.submit(cur, action.Course, new CoursePrivateState());
+                        break;
+                    case ("Register With Preferences"):
+                        cur = new Preference(action.Student, action.Preferences, action.Grade);
+                        pool.submit(cur, action.Student, new StudentPrivateState());
+                        break;
+                    case ("Unregister"):
+                        cur = new Unregister(action.Student);
+                        pool.submit(cur, action.Course, new CoursePrivateState());
+                        break;
+                    case ("Close Course"):
+                        cur = new CloseCourse(action.Course);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                    case ("Administrative Check"):
+                        cur = new CheckObs(action.Conditions, warehouse, action.Computer, action.Students);
+                        pool.submit(cur, action.Department, new DepartmentPrivateState());
+                        break;
+                }
+                if (cur == null) {
+                    throw new RuntimeException("??");
+                }
+                //add callback to every action
+                else {
+                    cur.subscribe(() -> {count.countDown();});
+                }
             }
+            try {
+                count.await();
+            } catch (InterruptedException ex) {
+            }
+            commitPhases(pool, phases, index + 1);
         }
-
     }
 
 	/**
@@ -194,7 +176,7 @@ public class Simulator {
         try(FileOutputStream fout = new FileOutputStream("result.ser"); ObjectOutputStream oos = new ObjectOutputStream(fout)) {
             oos.writeObject(SimulationResoult);
         }
-        catch (){System.out.println(Thread.currentThread().getId() + " ani nogea began edeeeeeeeeeeeeeen");}
+        catch (IOException io){System.out.println(Thread.currentThread().getId() + " ani nogea began edeeeeeeeeeeeeeen");}
         for(int i = 0; i < 8; i++){
             System.out.println(pool.getThreads()[i].getState() + " "+ i);
         }

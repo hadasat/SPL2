@@ -139,7 +139,7 @@ public class ActorThreadPool {
 					entry.getValue().compareAndSet(false, true);
 					version.inc();
 					///////////////
-					System.out.println(Thread.currentThread().getId() + ": "  + Thread.currentThread().getState());
+					//System.out.println(Thread.currentThread().getId() + ": "  + Thread.currentThread().getState());
 				}
 			}
 
