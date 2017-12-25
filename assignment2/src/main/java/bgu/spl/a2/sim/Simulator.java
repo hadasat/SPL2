@@ -41,7 +41,7 @@ public class Simulator {
 
     public static void main(String[] args){
         Gson gson = new Gson();
-        try (FileReader r = new FileReader("gsonFile.txt")) {
+        try (FileReader r = new FileReader("input1.txt")) {
             UniversitySystem uniSystem = gson.fromJson(r, UniversitySystem.class);
             List<GeneralAction> p1 = uniSystem.phase1, p2 = uniSystem.phase2, p3 = uniSystem.phase3;
             List<StringComputer> computers = uniSystem.Computers;
@@ -75,7 +75,6 @@ public class Simulator {
 
     private static void commitPhases(ActorThreadPool pool, List<List <GeneralAction>> phases, int index) {
         System.out.println("phase: " + index);
-        List<GeneralAction> nextPhase;
         //check that the next phase is exists
         if (index == phases.size()) {
             try {
@@ -83,6 +82,7 @@ public class Simulator {
             } catch (InterruptedException in) {
             }
             try {
+                System.out.println(end().toString());
                 writeOut();
             } catch (IOException io) {
                 System.out.println("mami at yafa sheli, metuka sheli");
@@ -168,7 +168,20 @@ public class Simulator {
 
 	private static void writeOut() throws IOException{
         HashMap<String, PrivateState> SimulationResoult;
+        Gson gson = new Gson();
         SimulationResoult = end();
+        System.out.println(gson.toJson(SimulationResoult));
+        FileOutputStream fout = new FileOutputStream("result.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fout);
+        String s =gson.toJson(SimulationResoult);
+        oos.writeObject(s);
+        try(  PrintWriter out = new PrintWriter( "filename.txt" )  ) {
+            out.println(s);
+        }
+        catch (IOException e){
+            System.out.println("whhwhhwhh");
+        }
+        /*
         for(int i = 0; i < 8 ; i++){
             if(pool.getThreads()[i].isAlive())
                 System.out.println(pool.getThreads()[i].getState() + " wow " + pool.getThreads()[i].getId());
@@ -181,5 +194,8 @@ public class Simulator {
             System.out.println(pool.getThreads()[i].getState() + " "+ i);
         }
         System.out.println(Thread.currentThread().getId());
+        */
+
+
     }
 }

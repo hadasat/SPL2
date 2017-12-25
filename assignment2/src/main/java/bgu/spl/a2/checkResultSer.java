@@ -24,7 +24,7 @@ public class checkResultSer {
 			ois = new ObjectInputStream(fr);
 			res = (HashMap<String, PrivateState>) ois.readObject();
 			
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		

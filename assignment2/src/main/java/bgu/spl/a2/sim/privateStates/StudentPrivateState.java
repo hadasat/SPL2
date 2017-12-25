@@ -49,4 +49,8 @@ public class StudentPrivateState extends PrivateState {
 	public void setSignature(long signature) {
 		this.signature = signature;
 	}
+
+	public int getGrade(String course){
+		return grades.get(course);
+	}
 }
